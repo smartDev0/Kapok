@@ -1,0 +1,8 @@
+{
+  "name": "crosh",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}
