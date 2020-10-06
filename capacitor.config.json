@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "crosh",
+  "appId": "com.kapok.tree",
+  "appName": "KapokTree",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
