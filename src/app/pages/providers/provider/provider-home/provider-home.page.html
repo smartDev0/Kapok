@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{provider?.name}}</ion-title>
+    <ion-buttons *ngIf="appSession.l_getUserId() && providerId" slot="end">
+      <ion-button slot="icon-only" (click)="presentPopover($event)" >
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="game-image" style="margin-bottom: 10px;">
+    <ion-img *ngIf="provider?.iconFullUrl" [src]="provider?.iconFullUrl"></ion-img>
+  </div>
+
+  <ion-card style="margin: 10px">
+    <ion-card-header style="padding: 10px">
+      <ion-card-title>
+        <ion-text color="orange">{{(provider)?.name}}</ion-text>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content style="padding: 5px">
+      <ion-item lines="none">
+        <ion-text>{{(provider)?.description}}</ion-text>
+      </ion-item>
+      <ion-item *ngIf="appSession.clientConfigure?.enableTag && provider?.tags" lines="none">
+        <ion-label text-wrap>
+          <ion-chip *ngFor="let tag of utils.getTagListFromString(provider.tags)" color="primary" outline>
+            <ion-label color="orange">{{tag.trim()}}</ion-label>
+          </ion-chip>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <div padding text-center>
+    <ion-button color="primary" strong="true" (click)="onMyRegistrations()">
+      <ion-icon color="lightOrange" name="navigate" ></ion-icon>
+      {{translateUtil.translateKey("My registrations")}}
+    </ion-button>
+    <ion-button *ngIf="provider?.enableInstructors" color="primary" strong="true" (click)="onViewInstructors()">
+      <ion-icon color="lightOrange" name="contacts" ></ion-icon>
+      {{translateUtil.translateKey("Available Instructors")}}
+    </ion-button>
+    <ion-button color="primary" strong="true" (click)="onAvailablePrograms()">
+      <ion-icon color="lightOrange" name="contacts" ></ion-icon>
+      {{translateUtil.translateKey("Available Programs")}}
+    </ion-button>
+
+    <ion-button *ngIf="appSession.l_isInstructor(providerId)" color="primary" strong="true" (click)="onMyTeachingSessions()">
+      <ion-icon color="lightOrange" name="time" ></ion-icon>
+      {{translateUtil.translateKey("My teaching sessions")}}
+    </ion-button>
+
+
+  </div>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

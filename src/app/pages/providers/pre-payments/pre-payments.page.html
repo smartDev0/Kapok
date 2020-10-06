@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Provider PrePayments')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <div *ngFor="let prePayment of prePayments">
+      <ion-item *ngIf="!prePayment.hide" detail>
+        <ion-label (click)="onEditPrePayment($event, prePayment?.id)">
+          <h2 [innerHtml]="utils.highlightSearch(prePayment?.email, searchKey)"></h2>
+          <h3>Used Date: {{utils.formatDate(prePayment?.usedDate)}}</h3>
+          <h3>Enabled: {{utils.getYesNo(prePayment?.enabled)}}</h3>
+        </ion-label>
+        <ion-button slot="start" (click)="onDeletePrePay(prePayment?.id)"><ion-icon name="trash"></ion-icon></ion-button>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

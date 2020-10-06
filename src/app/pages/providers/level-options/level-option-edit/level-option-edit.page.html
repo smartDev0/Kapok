@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Level Option Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form color="secondary" class="listContent" *ngIf="levelOption" #formRef="ngForm" (ngSubmit)="onSave(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="levelOption.name"
+                 name="name"
+                 #nameRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('Name is required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.maxlength">
+      <ion-label color="danger"  text-wrap>{{translateUtil.translateKey('Name')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="levelOption.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Sequence')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="levelOption.sequence" name="sequence" #sequenceRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="appSession.l_isSiteAdmin()">
+      <ion-label position="stacked" color="orange">{{translateUtil.translateKey('System default')}}</ion-label>
+      <ion-checkbox [(ngModel)]="levelOption.sysDefault" name="sysDefault"></ion-checkbox>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-checkbox [(ngModel)]="levelOption.enabled" name="enabled"></ion-checkbox>
+    </ion-item>
+
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

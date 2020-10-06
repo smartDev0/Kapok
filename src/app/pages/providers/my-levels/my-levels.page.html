@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Instructor Profile')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="instructor" #formRef="ngForm" (ngSubmit)="saveProfile(formRef)">
+    <ion-list-header>Instructor profile</ion-list-header>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Ski Level')}}</ion-label>
+      <ion-select [(ngModel)]="instructor.skiLevel" name="skiLevel">
+        <ion-select-option *ngFor="let level of appConstants.INSTRUCTOR_LEVELS" [value]="level">{{level}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Ski Certificated in')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #skiCertificatedInRef = "ngModel"
+                    displayFormat="YY-MMM-DD"
+                    [(ngModel)]="skiCertificatedIn"
+                    name="skiCertificatedIn"
+                    min="2000"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button type="button" slot="start" (click)="onDeleteSkiLevel()">
+        {{translateUtil.translateKey('Delete ski level')}}
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Snowboard Level')}}</ion-label>
+      <ion-select [(ngModel)]="instructor.boardLevel" name="boardLevel">
+        <ion-select-option *ngFor="let level of appConstants.INSTRUCTOR_LEVELS" [value]="level">{{level}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Snowboard Certificated in')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #snowboardCertificatedInRef = "ngModel"
+                    displayFormat="YY-MMM-DD"
+                    [(ngModel)]="snowboardCertificatedIn"
+                    name="snowboardCertificatedIn"
+                    min="2000"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button type="button" slot="start" (click)="onDeleteBoardLevel()">
+        {{translateUtil.translateKey('Delete snowboard level')}}
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Expire Date')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #memberExpireTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="expireTime"
+                    name="memberExpireTime"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button type="button" slot="start" (click)="onDeleteExpireDate()">
+        {{translateUtil.translateKey('Delete expire date')}}
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">{{translateUtil.translateKey('Autobiography')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="instructor.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="descriptionRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

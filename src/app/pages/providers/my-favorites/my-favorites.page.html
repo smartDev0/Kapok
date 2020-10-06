@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('My Favorites')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" onfocus="true" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="false" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-item color="secondary" lines="none">
+      <ion-label>{{translateUtil.translateKey('Select type')}}</ion-label>
+      <ion-select [(ngModel)]="appType" name="appType" (ngModelChange)="segmentChanged()">
+        <ion-select-option *ngFor="let option of optionsList" [value]="option">{{translateUtil.translateKey(option)}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="fromCommand===appConstants.PAGE_FOR_FAVORITE_INSTRUCTORS" no-margin>
+    <div *ngFor="let instructor of favoriteInstructors">
+      <ion-item *ngIf="!instructor.hide" (click)="onViewInstructorDetails(instructor.instructorId)"  detail>
+        <ion-label text-wrap>
+          <h2 class="titleLabel" [innerHtml]="utils.highlightSearch(instructor?.instructorName, searchKey)"></h2>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-list>
+  <ion-list *ngIf="fromCommand===appConstants.PAGE_FOR_FAVORITE_COURSES" no-margin>
+    <div *ngFor="let course of favoriteCourses">
+      <ion-item *ngIf="!course.hide" (click)="onViewCourseDetails(course.courseId)"  detail>
+        <ion-label text-wrap>
+          <h2 class="titleLabel" [innerHtml]="utils.highlightSearch(course?.courseName, searchKey)"></h2>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-list>
+
+  <div class="scroll-content"></div>
+</ion-content>

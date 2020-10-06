@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('InstructorTimes')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item-divider></ion-item-divider>
+  <ion-list *ngIf="schedules" class="listContent">
+    <ion-item class="pointer" *ngFor="let schedule of schedules" (click)="onViewDetails(schedule)" detail>
+      <ion-label text-wrap>
+        <h3>{{schedule?.title}}</h3>
+        <p *ngIf="appSession.l_isSiteAdmin()">{{schedule?.userId}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

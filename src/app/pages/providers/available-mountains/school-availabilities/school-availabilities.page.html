@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}School/Club Provides</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="provider">
+    <div class="game-image" style="margin-bottom: 10px;">
+      <ion-img *ngIf="provider?.iconFullUrl" [src]="provider?.iconFullUrl"></ion-img>
+    </div>
+
+    <div id="popover" style="margin-bottom: 20px !important;">
+      <ion-grid>
+        <ion-row>
+          <ion-col text-center>
+            <p class="larger-res" text-wrap>{{(provider)?.name}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <ion-item *ngIf="(provider)?.description" text-wrap>
+      <h3>{{(provider)?.description}}</h3>
+    </ion-item>
+    <ion-item *ngIf="appSession.clientConfigure?.enableTag && provider?.tags" text-center lines="none">
+      <ion-label text-wrap>
+        <ion-chip *ngFor="let tag of utils.getTagListFromString(provider.tags)" color="primary" outline>
+          <ion-label color="orange">{{tag.trim()}}</ion-label>
+        </ion-chip>
+      </ion-label>
+    </ion-item>
+
+    <div padding text-center>
+      <ion-button *ngIf="provider?.enableTripEvent" color="primary" strong="true" (click)="onViewTripEvents()">
+        <ion-icon color="lightOrange" name="navigate" ></ion-icon>
+        {{translateUtil.translateKey("Upcoming Trips")}}
+      </ion-button>
+      <ion-button *ngIf="provider?.enablePrograms" color="primary" strong="true" (click)="onViewAvailablePrograms()">
+        <ion-icon color="lightOrange" name="apps" ></ion-icon>
+        {{translateUtil.translateKey("Programs")}}
+      </ion-button>
+      <ion-button *ngIf="provider?.enableInstructors" color="primary" strong="true" (click)="onViewInstructors()">
+        <ion-icon color="lightOrange" name="contacts" ></ion-icon>
+        {{translateUtil.translateKey("Available Instructors")}}
+      </ion-button>
+    </div>
+  </div>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+  <!--<ion-fab bottom right>-->
+    <!--<button ion-fab class="fabButton" (click)="openMenu()">{{translateUtil.translateKey("Menu")}}</button>-->
+  <!--</ion-fab>-->
+</ion-content>

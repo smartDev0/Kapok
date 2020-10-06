@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Terms')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-list class="listContent">
+    <ion-item text-wrap>
+      <div #termsContent></div>
+    </ion-item>
+  </ion-list>
+</ion-content>
+

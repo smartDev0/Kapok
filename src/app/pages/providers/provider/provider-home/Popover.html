@@ -1,0 +1,79 @@
+<ion-list *ngIf="appSession.l_getUserId() && providerId">
+  <!--Generic Provider options-->
+  <ion-list-header class="popupHeader">{{translateUtil.translateKey('Club/School Options')}}</ion-list-header>
+
+  <!--example-->
+  <!--<ion-button color="danger" expand="full" size="small" (click)="close('ShowInstructors')">{{translateUtil.translateKey('Club/School Instructors 127')}}</ion-button>-->
+  <!--<ion-button color="allMenu" expand="full" size="small" (click)="close('ShowInstructors')">{{translateUtil.translateKey('Club/School Instructors 129')}}</ion-button>-->
+  <!--<ion-button color="allMenu" expand="full" size="small" (click)="close('ShowInstructors')">{{translateUtil.translateKey('Club/School Instructors 125')}}</ion-button>-->
+
+  <!--<ion-button color="gold" expand="full" size="small" (click)="close('ShowInstructors')">{{translateUtil.translateKey('Club/School Instructors 123')}}</ion-button>-->
+
+<!--//////////////////////-->
+  <!--Everyone-->
+  <ion-button color="allMenu" expand="full" size="small" (click)="close('ShowInstructors')" class="popOverMenu">{{translateUtil.translateKey('Instructors')}}</ion-button>
+  <ion-button color="allMenu" expand="full" size="small" (click)="close('Membership')" class="popOverMenu">{{translateUtil.translateKey('Membership')}}</ion-button>
+
+  <!--member pages-->
+  <ion-button color="memberMenu" expand="full" size="small" (click)="close('MyRegistrations')" class="popOverMenu">{{translateUtil.translateKey('My Registrations')}}</ion-button>
+  <ion-button color="memberMenu" expand="full" size="small" (click)="close('myLearningSkiCourse')" class="popOverMenu">{{translateUtil.translateKey('Learning Programs')}}</ion-button>
+  <ion-button color="memberMenu" expand="full" size="small" (click)="close('onLearningSessions')" class="popOverMenu">{{translateUtil.translateKey('Learning Sessions')}}</ion-button>
+
+  <!--instructor-->
+  <!--For instructor to manager teaching course for this provider-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('MyTeachingPage')" class="popOverMenu">{{translateUtil.translateKey('Teaching Programs')}}</ion-button>
+  <!--For instructor teaching courses registrations -->
+<!--  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('MyTeachingRegistrations')" class="popOverMenu">{{translateUtil.translateKey('Teaching Registrations')}}</ion-button>-->
+  <!--For instructor sessionTimes-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('MyTeachingSessionTimes')" class="popOverMenu">{{translateUtil.translateKey('Teaching Sessions')}}</ion-button>
+  <!--For instructor to manager levels and profile-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('MyLevelsPage')" class="popOverMenu">{{translateUtil.translateKey('Certification Levels')}}</ion-button>
+  <!--Manage instructorTime-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('myInstructorTimes')" class="popOverMenu">{{translateUtil.translateKey('My InstructorTime')}}</ion-button>
+  <!--instructorTime check-->
+<!--  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('checkInstructorTime')" class="popOverMenu">{{translateUtil.translateKey('Check my instructorTime')}}</ion-button>-->
+  <!--Age range options-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('AgeRangeOptions')" class="popOverMenu">{{translateUtil.translateKey('Age Range Options')}}</ion-button>
+  <!--Level options-->
+  <ion-button color="instructorMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId)" expand="full" size="small" (click)="close('LevelOptions')" class="popOverMenu">{{translateUtil.translateKey('Level Options')}}</ion-button>
+
+  <!--MountainsPage-->
+  <!--Trip Events-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('tripEvents')" class="popOverMenu">{{translateUtil.translateKey('Trip Events')}}</ion-button>
+
+  <!--For admin to manage skiCourseRegistrations-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('allRegistrations')" class="popOverMenu">{{translateUtil.translateKey('All Registrations')}}</ion-button>
+  <!--For admin to manage all sessionTimes-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('allSessions')" class="popOverMenu">{{translateUtil.translateKey('All Sessions')}}</ion-button>
+
+  <!--For owner to manage administrators-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('PaymentReportPage')" class="popOverMenu">{{translateUtil.translateKey('Payment Report')}}</ion-button>
+
+  <!--For owner to manage administrators-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('administrators')" class="popOverMenu">{{translateUtil.translateKey('Administrators')}}</ion-button>
+  <!--Membership typs-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('MembershipTypesPage')" class="popOverMenu">{{translateUtil.translateKey('Membership Types')}}</ion-button>
+  <!--For admin manager members-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('members')" class="popOverMenu">{{translateUtil.translateKey('Members')}}</ion-button>
+  <!--For admin to manager ski instructors-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('instructors')" class="popOverMenu">{{translateUtil.translateKey('Instructors')}}</ion-button>
+  <!--For admin to manage skiCourses-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('courses')" class="popOverMenu">{{translateUtil.translateKey('Programs')}}</ion-button>
+  <!--Provider Program types-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('providerCourseTypes')" class="popOverMenu">{{translateUtil.translateKey('Program types')}}</ion-button>
+  <!--Prices and Coupons-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('priceUnits')" class="popOverMenu">{{translateUtil.translateKey('Prices, Coupons')}}</ion-button>
+  <!--PaymentAccountPage-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('PaymentAccountPage')" class="popOverMenu">{{translateUtil.translateKey('Payment Account')}}</ion-button>
+  <!--PrePaymentsPage-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('PrePaymentsPage')" class="popOverMenu">{{translateUtil.translateKey('Pre-Approved Payments')}}</ion-button>
+  <!--School Calendar-->
+<!--  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('ProviderSchedulesPage')" class="popOverMenu">{{translateUtil.translateKey('Schedules')}}</ion-button>-->
+  <!--  Course consent content-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('CourseConsentPage')" class="popOverMenu">{{translateUtil.translateKey('Program Consent')}}</ion-button>
+  <!--All instructorTime-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('allInstructorTimes')" class="popOverMenu">{{translateUtil.translateKey('All InstructorTimes')}}</ion-button>
+  <!--Camp Prices-->
+  <ion-button color="adminMenu" *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" expand="full" size="small" (click)="close('priceFormulas')" class="popOverMenu">{{translateUtil.translateKey('Price Formulas')}}</ion-button>
+
+</ion-list>

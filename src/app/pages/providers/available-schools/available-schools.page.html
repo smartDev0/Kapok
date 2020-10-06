@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Available Clubs/Schools')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="1000" showCancelButton="always"
+                   (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item-divider></ion-item-divider>
+  <div *ngFor="let provider of providers">
+    <div *ngIf="!provider.hide" >
+      <ion-item class="pointer" (click)="onViewDetails(provider)" lines="none">
+        <ion-thumbnail slot="start">
+          <img *ngIf="provider?.iconUrl" alt="" [src]="provider?.iconUrl">
+        </ion-thumbnail>
+        <h2 [innerHtml]="utils.highlightSearch(provider.name, searchKey)"></h2>
+      </ion-item>
+    </div>
+  </div>
+
+  <div class="scroll-content"></div>
+</ion-content>

@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Create Payment Report')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <form #formRef="ngForm" (ngSubmit)="generateReport(formRef)">
+      <ion-list-header color="secondary" text-capitalize="false" class="listHeader">{{translateUtil.translateKey('Time range')}}</ion-list-header>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Start Time')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-icon slot="end" name="time"></ion-icon>
+        <ion-datetime #startTimeRef = "ngModel"
+                      displayFormat="YY-MMM-DD HH:mm"
+                      [(ngModel)]="reportRequest.startTime"
+                      name="startTime"
+                      min="2017"
+                      max="2029-01-10"
+                      required>
+        </ion-datetime>
+        <ion-label color="danger" *ngIf="startTimeRef.errors?.required && submitted">{{translateUtil.translateKey('Start time required')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('End Time')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-icon slot="end" name="time"></ion-icon>
+        <ion-datetime #endTimeRef = "ngModel"
+                      displayFormat="YY-MMM-DD HH:mm"
+                      [(ngModel)]="reportRequest.endTime"
+                      name="endTime"
+                      min="2017"
+                      max="2029-01-10"
+                      required>
+        </ion-datetime>
+        <ion-label color="danger" *ngIf="endTimeRef.errors?.required && submitted">{{translateUtil.translateKey('End time required')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Emails')}}</ion-label>
+        <ion-input type="text" name="emails" [(ngModel)]="reportRequest.emails"
+                   #emailsRef="ngModel"
+                   maxlength="1000"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>{{translateUtil.translateKey('Download Report')}}</ion-label>
+        <ion-checkbox [(ngModel)]="reportRequest.downloadReport" name="downloadReport"></ion-checkbox>
+      </ion-item>
+    </form>
+  </div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

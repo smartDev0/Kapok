@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onCancel()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{currentPage}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content >
+  <ion-list class="listContent" *ngIf="currentPage==LOGIN_PAGE">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}</ion-label>
+      <ion-input type="email"
+                 [(ngModel)]="aclUser.email"
+                 name="email"
+                 #nameRef="ngModel"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('PASSWORD')}}</ion-label>
+      <ion-input type="password" [(ngModel)]="aclUser.password"  name="password"></ion-input>
+    </ion-item>
+    <ion-button size="small" expand="block" (click)="onLogin()">{{translateUtil.translateKey('LOGIN')}}</ion-button>
+  </ion-list>
+
+  <ion-list class="listContent" *ngIf="currentPage==REGISTER_PAGE">
+    <form #formRef="ngForm" (ngSubmit)="onRegister(formRef)">
+      <ion-item>
+        <ion-label position="stacked">Username<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input id="userName" type="text" [(ngModel)]="aclUser.userName" #userName="ngModel" name="userName" required
+                   (ngModelChange)="resetError('userNameError')" (ionBlur)="checkUserName()" ng-trim="false"
+                   pattern="^[a-zA-Z0-9]*$" minlength="2" maxlength="20"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="userName.errors?.required && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('USERNAME_REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="userName.errors?.pattern && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('NO_SPECIAL_CHAR')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="userName.errors?.minlength && submitted">
+        <ion-label color="danger" style="font-size: 0.85em" *ngIf="userName.errors?.minlength && submitted">{{translateUtil.translateKey('MIN_2')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="userName.errors?.maxlength && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('MAX_20')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="userNameError" >
+        <ion-label color="danger"  style="font-size: 0.85em" text-wrap>{{userNameError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="email" [(ngModel)]="aclUser.email" name="email" #email="ngModel" required
+                   (ngModelChange)="resetError('emailError')" (ionBlur)="checkEmail()"
+                   pattern="^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[A-Za-z0-9+_{|}-]+[.][A-Za-z0-9+_{|}-]+$"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="email.errors?.required && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="email.errors?.pattern && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('WRONG_EMAIL')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="emailError && submitted">
+        <ion-label color="danger" style="font-size: 0.85em" text-wrap>{{emailError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('PASSWORD')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="password" [(ngModel)]="aclUser.password"  name="password" #password="ngModel" required
+                   (ngModelChange)="resetError('passwordError')" minlength="2" maxlength="20"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="password.errors?.required && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('PASSWORD')}} {{translateUtil.translateKey('REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="password.errors?.minlength && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('MIN_2')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="password.errors?.maxlength && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('MAX_20')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="passwordError && submitted">
+        <ion-label color="danger" style="font-size: 0.85em" text-wrap>{{passwordError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('CONFIRM_PASSWORD')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="password" [(ngModel)]="confirmPass" name="confirmPass" required #confirmPassCtl="ngModel"
+                   (ngModelChange)="checkConfirmPassword()" ></ion-input>
+      </ion-item>
+      <ion-item *ngIf="confirmPassCtl.errors?.required && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('CONFIRM_PASSWORD')}} {{translateUtil.translateKey('REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="confirmPassError && submitted">
+        <ion-label color="danger" style="font-size: 0.85em" text-wrap>{{confirmPassError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label >{{translateUtil.translateKey('AGREE_TERMS')}}</ion-label>
+        <ion-checkbox [(ngModel)]="aclUser.agreeTerms" name="agreeTerms"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-button size="small" expand="block" type="button" (click)="onTerms()">{{translateUtil.translateKey('TERMS')}}</ion-button>
+      </ion-item>
+      <ion-item *ngIf="!aclUser.agreeTerms && submitted">
+        <ion-label color="danger" style="font-size: 0.85em" text-wrap>Please read and agree the terms.</ion-label>
+      </ion-item>
+
+      <ion-button size="small" expand="block" type="submit">{{translateUtil.translateKey('REGISTER')}}</ion-button>
+    </form>
+  </ion-list>
+
+  <!--Forgot password page-->
+  <ion-list class="listContent" *ngIf="currentPage==RESET_PAGE">
+    <form #formRef="ngForm" (ngSubmit)="onReset(formRef)">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}</ion-label>
+        <ion-input type="email" [(ngModel)]="aclUser.email" name="email" #email="ngModel" required
+                   pattern="^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[A-Za-z0-9+_{|}-]+[.][A-Za-z0-9+_{|}-]+$"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="email.errors?.required && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="email.errors?.pattern && submitted">
+        <ion-label color="danger" style="font-size: 0.85em">{{translateUtil.translateKey('WRONG_EMAIL')}}</ion-label>
+      </ion-item>
+      <ion-button size="small" expand="block" type="submit">{{translateUtil.translateKey('RESET_PASSWORD')}}</ion-button>
+    </form>
+  </ion-list>
+
+  <ion-list margin-top>
+    <ion-button size="small" expand="block" *ngIf="currentPage!=LOGIN_PAGE" (click)="onShowLogin()">{{translateUtil.translateKey('LOGIN')}}</ion-button>
+    <ion-button size="small" expand="block" *ngIf="currentPage!=REGISTER_PAGE" (click)="onShowRegister()">{{translateUtil.translateKey('REGISTER')}}</ion-button>
+    <ion-button size="small" expand="block" *ngIf="currentPage!=RESET_PAGE" (click)="onShowForgotPassword()">{{translateUtil.translateKey('FORGOT_PASSWORD')}}</ion-button>
+    <ion-button size="small" expand="block" (click)="onCancel()">{{translateUtil.translateKey('CANCEL')}}</ion-button>
+  </ion-list>
+
+  <div class="scroll-content"></div>
+</ion-content>
+
+

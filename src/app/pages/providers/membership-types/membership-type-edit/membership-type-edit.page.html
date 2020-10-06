@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Edit MembershipType')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="membershipType" #formRef="ngForm" (ngSubmit)="l_save(formRef)">
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('ID')}}: {{(membershipType)?.id}}
+    </ion-list-header>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" [(ngModel)]="membershipType.name" name="name" #nameRef="ngModel" min="0" max="100" required></ion-input>
+      <ion-label color="danger" *ngIf="nameRef.errors?.required && submitted">{{translateUtil.translateKey('Membership type name required')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Member Type Code')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select #memberTypeCodeId="ngModel" name="memberTypeCodeId" id="memberTypeCodeId" [(ngModel)]="membershipType.memberTypeCodeId" required>
+        <ion-select-option *ngFor="let memberType of memberTypes" [value]="memberType.id">{{memberType.name}}</ion-select-option>
+      </ion-select>
+      <ion-label color="danger" *ngIf="memberTypeCodeId.errors?.required && submitted">{{translateUtil.translateKey('Code Type required.')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Price')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="membershipType.price"
+                 name="price"
+                 #priceRef="ngModel"
+                 min="0"
+                 max="1000">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Activated')}}</ion-label>
+      <ion-toggle
+          name="activated"
+          [(ngModel)]="membershipType.activated"
+      ></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="membershipType.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="descriptionRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+
+    <ion-item-divider>{{translateUtil.translateKey('Expire settings')}}</ion-item-divider>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Expire in months')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="membershipType.expiredInMonths"
+                 name="expiredInMonths"
+                 #expiredInMonthsRef="ngModel"
+                 min="0"
+                 max="1000">
+      </ion-input>
+      <ion-label color="danger" *ngIf="expiredInMonthsError">{{expiredInMonthsError}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('and days')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="membershipType.expiredInDays"
+                 name="expiredInDays"
+                 #expiredInDaysRef="ngModel"
+                 min="0"
+                 max="1000">
+      </ion-input>
+      <ion-label color="danger" *ngIf="expiredInDaysError">{{expiredInDaysError}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" >{{translateUtil.translateKey('Expire on day of year')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime
+          id="expiredOnDayOfYear"
+          #expiredOnDayOfYearRef="ngModel"
+          displayFormat="MMM DD"
+          [(ngModel)]="membershipType.expiredOnDayOfYear"
+          name="expiredOnDayOfYear"
+          yearValues={{utils.getTwoYears()}}
+          max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+  </form>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

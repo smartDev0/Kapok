@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Configuration: {{appConfiguration?.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="appConfiguration">
+    <!-- basic -->
+    <ion-list >
+      <ion-item *ngFor="let configureGroup of appConfiguration.configureGroups" (click)="onSelect(configureGroup)">
+        <h2 stacked>{{configureGroup.name}}</h2>
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>Show banner</ion-label>
+        <ion-toggle [(ngModel)]="appConfiguration.showBanner" name="showBanner"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Banner Content')}}</ion-label>
+        <ion-textarea class="medium" [(ngModel)]="appConfiguration.bannerContent"  name="bannerContent"
+                      #bannerContentRef="ngModel" maxlength="2000"></ion-textarea>
+        <ion-text align-self-start color="danger" *ngIf="bannerContentRef.errors?.maxlength" >Maximum 2000 characters</ion-text>
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>Enable Tags</ion-label>
+        <ion-toggle [(ngModel)]="appConfiguration.enableTag" name="enableTag"></ion-toggle>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedConfGroup">
+      <ion-list-header>Group entries</ion-list-header>
+      <ion-item *ngFor="let configureEntry of selectedConfGroup.entries">
+        <ion-label (click)="onSelectEntry(configureEntry)">
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{configureEntry.name}}</h2>
+          </ion-text>
+          <ion-text>{{configureEntry.value}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="seletecEntry">
+      <ion-list-header color="primary">Selected Entry</ion-list-header>
+      <ion-item >
+        <ion-label stacked>Entry Name</ion-label>
+        <ion-input type="text" [(ngModel)]="seletecEntry.name" name="name" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Entry value</ion-label>
+        <ion-input type="text" [(ngModel)]="seletecEntry.value" name="name" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Description</ion-label>
+        <ion-input type="text" [(ngModel)]="seletecEntry.description" name="name" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Sequence</ion-label>
+        <ion-input type="text" [(ngModel)]="seletecEntry.sequence" name="name" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Enabled</ion-label>
+        <ion-toggle [(ngModel)]="seletecEntry.enabled" name="enabled"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-button size="small" color="primary" (click)="onDeleteEntry(seletecEntry)">{{translateUtil.translateKey("Delete")}}</ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

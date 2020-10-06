@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Instructors')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let instructor of instructors">
+    <ion-grid *ngIf="!instructor.hide">
+      <ion-row >
+        <ion-col size="4">
+          <ion-thumbnail *ngIf="provider?.showInstructorPhoto">
+            <img *ngIf="instructor?.iconUrl" alt="" [src]="instructor?.iconUrl">
+          </ion-thumbnail>
+        </ion-col>
+        <ion-col size="8">
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                <ion-text ><h2 [ngClass]="(instructor?.activated) ? 'nameTitle' : 'disabledTitle'" [innerHtml]="utils.highlightSearch(instructor?.name, searchKey)"></h2></ion-text>
+                <p *ngIf="provider?.showRating" style="padding-left: 15px !important;">
+                  <span class="stars alignleft" >
+                      <span [ngStyle]="{ width: utils.getStars(instructor.score) }"></span>
+                  </span>
+                      <span padding-start class="alignleft">
+                      <span>{{translateUtil.translateKey('reviews: ')}} {{(instructor.reviewCount==null)?0:instructor.reviewCount}}</span>
+                  </span>
+                </p>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                <ion-text><p [innerHtml]="utils.highlightSearch(instructor?.email, searchKey)"></p></ion-text>
+                <ion-text><p><i *ngIf="instructor?.skiLevel>0" ion-text color="primary">CSIA: L{{instructor?.skiLevel}}  </i><i *ngIf="instructor?.boardLevel>0" ion-text color="secondary">CASI: L{{instructor?.boardLevel}}</i></p></ion-text>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button size="small" *ngIf="CALLBACK_HOOKED_COMPONENT" (click)="onChooseInstructor(instructor)">{{translateUtil.translateKey('Choose')}}</ion-button>
+              <ion-button size="small" (click)="onViewDetails(instructor?.id)">{{translateUtil.translateKey('View')}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

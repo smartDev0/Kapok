@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Terms')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-list class="listContent">
+    <ion-item *ngIf="termsContent?.nativeElement?.innerHTML" text-wrap>
+      <div #termsContent></div>
+    </ion-item>
+  </ion-list>
+</ion-content>
+

@@ -1,0 +1,201 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{viewTitle}}</ion-title>
+    <ion-button slot="end">
+      <ion-button (click)="today()">Today</ion-button>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list-header>Test Page</ion-list-header>
+
+  <ion-card>
+    <ion-card-header tappable (click)="collapseCard = ! collapseCard">
+      <ion-card-title>New Event</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="!collapseCard">
+
+      <ion-item>
+        <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Start</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" [min]="minDate"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>End</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="minDate"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>All Day?</ion-label>
+        <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+      </ion-item>
+      <ion-button fill="outline" expand="block" (click)="addEvent()" [disabled]="event.title==''">Add Event</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-row>
+    <ion-col size="4">
+      <ion-button expand="block" [color]="calendar.mode=='month' ? 'primary' : 'secondary'" (click)="changeMode('month')">Month</ion-button>
+    </ion-col>
+    <ion-col size="4">
+      <ion-button expand="block" [color]="calendar.mode=='week' ? 'primary' : 'secondary'" (click)="changeMode('week')">week</ion-button>
+    </ion-col>
+    <ion-col size="4">
+      <ion-button expand="block" [color]="calendar.mode=='day' ? 'primary' : 'secondary'" (click)="changeMode('day')">day</ion-button>
+    </ion-col>
+  </ion-row>
+
+  <ion-col size="6" text-right>
+    <ion-button fill="clear" (click)="back()">
+      <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-col>
+  <ion-col size="6" text-right>
+    <ion-button fill="clear" (click)="next()">
+      <ion-icon name="arrow-forward" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-col>
+
+  <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+    <ion-card style="margin: 5px">
+      <ion-card-header style="padding: 5px">{{utils.formatDateShort(selectedDate.date)}}</ion-card-header>
+      <ion-card-content style="padding: 5px">
+        <ion-item *ngIf="selectedDate.events.length == 0">
+          <ion-label text-wrap>No Events</ion-label>
+        </ion-item>
+
+        <ion-item text-wrap (click)="onEventSelected(event)" *ngFor="let event of selectedDate.events">
+          <ion-label text-wrap>
+            <ion-text>
+              <h2 class="fieldLabel">{{event.title}}</h2>
+            </ion-text>
+            <ion-text>{{utils.formatTimeOfDate(event.startTime)}} to {{utils.formatTimeOfDate(event.endTime)}}</ion-text>
+            <ion-text *ngIf="this.appSession.l_isSiteAdmin()&&event.id" color="orange"> {{event.id}}</ion-text>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+
+    </ion-card>
+  </ng-template>
+
+  <calendar
+    [monthviewEventDetailTemplate]="template"
+    [eventSource]="eventSource"
+    [calendarMode]="calendar.mode"
+    [currentDate]="calendar.currentDate"
+    (onEventSelected)="onEventSelected($event)"
+    (onTitleChanged)="onTitleChanged($event)"
+    (onTimeSelected)="onTimeSelected($event)"
+    startHour="6"
+    endHour="20"
+    step="30"
+    startingDayWeek="1">
+  </calendar>
+
+<!--  <ion-icon color="orange" size="small" src="assets/icon/ski3.svg"></ion-icon>-->
+
+<!--  <ion-list-header>Test Youtube link</ion-list-header>-->
+<!--  <div class="resp-container">-->
+<!--    <iframe class="resp-iframe" src="https://www.youtube.com/embed/MLleDRkSuvk" frameborder="0" allowfullscreen></iframe>-->
+<!--  </div>-->
+
+<!--  <ion-list-header>Test Youtube dynamic link</ion-list-header>-->
+<!--  <div class="resp-container">-->
+<!--    <iframe class="resp-iframe" [src]="youtubeLink" frameborder="0" allowfullscreen></iframe>-->
+<!--  </div>-->
+
+<!--  <ion-list-header>Test Youtube bypassed dynamic link</ion-list-header>-->
+<!--  <div class="resp-container">-->
+<!--    <iframe class="resp-iframe" [src]="safeLink" frameborder="0" allowfullscreen></iframe>-->
+<!--  </div>-->
+
+<!--  <ion-list-header>Test Youtube video tag</ion-list-header>-->
+<!--  <video width="400" controls>-->
+<!--    <source src="https://www.youtube.com/embed/MLleDRkSuvk">-->
+<!--    &lt;!&ndash;<source src="../../assets/videos/VideoDemo.ogg" type="video/ogg">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+
+<!--  <ion-list-header>Test Rich editor Jdoit</ion-list-header>-->
+<!--  <jodit-editor-->
+<!--    defaultValue="temporary content."-->
+<!--    [config]="{-->
+<!--      buttons:   ['link', 'image', 'video', 'bold', 'paragraph'],-->
+<!--      buttonsMD: ['link', 'image', 'video', 'bold', 'paragraph'],-->
+<!--      buttonsSM: ['link', 'image', 'video', 'bold', 'paragraph'],-->
+<!--      buttonsXS: ['link', 'image', 'video', 'bold', 'paragraph']-->
+<!--    }"-->
+<!--    (onChange)="onJoditChange($event)">-->
+<!--  </jodit-editor>-->
+
+<!--  <ion-list-header>Result</ion-list-header>-->
+<!--  <div [innerHTML]="editContent" no-margin></div>-->
+
+
+
+<!--  <ion-list-header>Test Video</ion-list-header>-->
+<!--  <p>Test a local video</p>-->
+<!--  <video width="400" controls>-->
+<!--    <source src="../../assets/videos/VideoDemo.mp4" type="video/mp4">-->
+<!--    &lt;!&ndash;<source src="../../assets/videos/VideoDemo.ogg" type="video/ogg">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>Test another local video</p>-->
+<!--  <video width="400" controls>-->
+<!--    <source src="../../assets/videos/VideoDemo.mp4">-->
+<!--    &lt;!&ndash;<source src="../../assets/videos/VideoDemo.ogg" type="video/ogg">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>Test another local video compressed</p>-->
+<!--  <video width="400" controls>-->
+<!--    <source src="../../assets/videos/Opt.mp4">-->
+<!--    &lt;!&ndash;<source src="../../assets/videos/VideoDemo.ogg" type="video/ogg">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>-->
+<!--    Video courtesy of-->
+<!--    <a href="https://www.bigbuckbunny.org/" target="_blank">Big Buck Bunny</a>.-->
+<!--  </p>-->
+
+<!--  <p>Test a service video</p>-->
+<!--  <video controls=true style="width: 100%; height: 200px" preload="metadata" class="video-js">-->
+<!--    <source src="{{getVideoURL(7)}}">-->
+<!--    &lt;!&ndash;<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>Test a service video without video-js</p>-->
+<!--  <video controls=true style="width: 100%; height: 200px" preload="metadata" >-->
+<!--    <source src="{{getVideoURL(7)}}">-->
+<!--    &lt;!&ndash;<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>Test a service 17 video without video-js</p>-->
+<!--  <video controls=true style="width: 100%; height: 200px" preload="metadata" >-->
+<!--    <source src="{{getVideoURL(17)}}">-->
+<!--    &lt;!&ndash;<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">&ndash;&gt;-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+<!--  <p>Test a public video</p>-->
+<!--  <video controls=true style="width: 100%; height: 200px" preload="metadata" class="video-js">-->
+<!--    &lt;!&ndash;<source src="{{getVideoURL(attachedFile.id)}}">&ndash;&gt;-->
+<!--    <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">-->
+<!--    Your browser does not support HTML5 video.-->
+<!--  </video>-->
+
+  <div class="scroll-content"></div>
+</ion-content>

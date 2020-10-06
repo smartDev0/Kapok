@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Trip Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="trip" #formRef="ngForm" (ngSubmit)="saveTrip(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Title')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="trip.title"
+                 name="title"
+                 #titleRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Title required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.maxlength" lines="none">
+      <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Title')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Organized Trip Destination')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select [(ngModel)]="trip.tripHillId" name="appType" required>
+        <ion-select-option *ngFor="let tripHill of tripHills" [value]="tripHill.id">{{tripHill.locationStr}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!trip?.tripHillId && submitted" lines="none">
+      <ion-label color="danger" text-wrap>{{translateUtil.translateKey('TripHill required')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Location')}}</ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="trip.location"
+                 name="location"
+                 #locationRef="ngModel"
+                 min=1
+                 max=200>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Trip Time')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #tripTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="trip.time"
+                    name="courseTime"
+                    hourValues="8,9,10,11,12,13,14,15,16"
+                    minuteValues="0,30"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Registration Deadline')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #deadLineRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="trip.deadLine"
+                    name="deadLine"
+                    minuteValues="0,30"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item *ngIf="deadlineError && submitted">
+      <ion-label color="danger">{{deadlineError}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Minimum Count')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="trip.minCount"
+                 name="minCount"
+                 #minCountRef="ngModel"
+                 min=1
+                 max=200>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Maximum Count')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="trip.maxCount"
+                 name="maxCount"
+                 #maxCountRef="ngModel"
+                 min=1
+                 max=200>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Description')}}</ion-label>
+      <ion-textarea placeholder="Enter description here..." name="description" [(ngModel)]="trip.description"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Condition')}}</ion-label>
+      <ion-textarea name="condition" [(ngModel)]="trip.conditionStr"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-toggle name="enabled" [(ngModel)]="trip.enabled"></ion-toggle>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

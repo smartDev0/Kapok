@@ -1,0 +1,172 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('School/Club Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="provider" #formRef="ngForm" (ngSubmit)="saveProvider(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="provider.name"
+                 name="name"
+                 #nameRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+      <ion-text align-self-start color="danger" *ngIf="nameRef.errors?.required && submitted">{{translateUtil.translateKey('Name required')}}</ion-text>
+      <ion-text align-self-start color="danger" *ngIf="nameRef.errors?.maxlength" >{{translateUtil.translateKey('Name')}} {{translateUtil.translateKey('MAX_200')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Address')}}</ion-label>
+      <ion-textarea class="small" [(ngModel)]="provider.addressStr"  name="addressStr"
+                    #locationRef="ngModel" maxlength="200"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="locationRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_200')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Phone')}} (111-1111111)</ion-label>
+      <ion-input type="text" class="small" [(ngModel)]="provider.phone"  name="phoneNumber"
+                    #phoneNumberRef="ngModel" maxlength="20"></ion-input>
+      <ion-text align-self-start color="danger" *ngIf="phoneNumberRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_20')}}</ion-text>
+      <ion-text align-self-start color="danger" *ngIf="phoneError && submitted">{{phoneError}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Tax Rate')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" #taxRateRef="ngModel" [(ngModel)]="provider.taxRate"  name="taxRate" required></ion-input>
+      <ion-text align-self-start color="danger" *ngIf="taxRateRef.errors?.required && submitted">{{translateUtil.translateKey('Tax rate required')}}</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Email')}}</ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="provider.email"
+                 name="email"
+                 #emailRef="ngModel"
+                 maxlength="100"
+                 >
+      </ion-input>
+      <ion-text align-self-start color="danger" *ngIf="emailRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_100')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Auditing')}} (all instructors' registration emails will be CC to audit email)</ion-label>
+      <ion-toggle name="auditing" [(ngModel)]="provider.auditing"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Audit Email')}}</ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="provider.auditEmail"
+                 name="auditEmail"
+                 #auditEmailRef="ngModel"
+                 maxlength="100"
+                 [disabled]="!provider.auditing"
+                 >
+      </ion-input>
+      <ion-text align-self-start color="danger" *ngIf="auditEmailRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_100')}}</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Online Membership')}}</ion-label>
+      <ion-toggle name="acceptMember" [(ngModel)]="provider.onlineMembership"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show TripEvents')}}</ion-label>
+      <ion-toggle name="TripEvents" [(ngModel)]="provider.enableTripEvent"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Programs')}}</ion-label>
+      <ion-toggle name="enablePrograms" [(ngModel)]="provider.enablePrograms"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Instructors')}}</ion-label>
+      <ion-toggle name="enableInstructors" [(ngModel)]="provider.enableInstructors"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Instructor Photo')}}</ion-label>
+      <ion-toggle name="showInstructorPhoto" [(ngModel)]="provider.showInstructorPhoto"></ion-toggle>
+    </ion-item>
+<!--    <ion-item>-->
+<!--      <ion-label >{{translateUtil.translateKey('Show Calendar')}}</ion-label>-->
+<!--      <ion-toggle name="enablePackages" [(ngModel)]="provider.enablePackages"></ion-toggle>-->
+<!--    </ion-item>-->
+
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Review')}}</ion-label>
+      <ion-toggle name="showReview" [(ngModel)]="provider.showReview"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Rating')}}</ion-label>
+      <ion-toggle name="showRating" [(ngModel)]="provider.showRating"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Review Email Link')}}</ion-label>
+      <ion-toggle name="showEmailReview" [(ngModel)]="provider.showEmailReview"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Lift Ticket Option')}}</ion-label>
+      <ion-toggle name="enableLiftTicket" [(ngModel)]="provider.enableLiftTicket"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Rental Option')}}</ion-label>
+      <ion-toggle name="enableRental" [(ngModel)]="provider.enableRental"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show CourseTime on Lesson Details')}}</ion-label>
+      <ion-toggle name="showCourseTime" [(ngModel)]="provider.showCourseTime"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Lesson Tags')}}</ion-label>
+      <ion-toggle name="showCourseTag" [(ngModel)]="provider.showCourseTag"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Show Private Programs on Programs Page')}}</ion-label>
+      <ion-toggle name="showPrivateCourses" [(ngModel)]="provider.showPrivateCourses"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Pay Online')}}</ion-label>
+      <ion-toggle name="payOnline" [(ngModel)]="provider.payOnline"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Pay Offline')}}</ion-label>
+      <ion-toggle name="payOffline" [(ngModel)]="provider.payOffline"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Payment Option')}}</ion-label>
+      <ion-select name="payOptionId" #payOptionRef="ngModel" [(ngModel)]="provider.payOptionId">
+        <ion-select-option *ngFor="let payOption of payOptions" [value]="payOption.id">{{payOption.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_isSiteAdmin()">
+      <ion-label >{{translateUtil.translateKey('Activated')}}</ion-label>
+      <ion-toggle name="activated" [(ngModel)]="provider.activated"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="provider.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="descriptionRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_1000')}}</ion-text>
+    </ion-item>
+
+    <ion-item *ngIf="appSession.clientConfigure?.enableTag && provider?.tags">
+      <ion-label text-wrap>
+        <ion-chip *ngFor="let tag of utils.getTagListFromString(provider.tags)" color="primary" outline>
+          <ion-label color="orange">{{tag.trim()}}</ion-label>
+          <ion-icon name="close-circle" (click)="onDeleteTag(tag)"></ion-icon>
+        </ion-chip>
+      </ion-label>
+    </ion-item>
+    <ion-button size="small" expand="block" (click)="onAddTag()">+ tag</ion-button>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

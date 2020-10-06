@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Edit TripHill</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form *ngIf="tripHill" class="listContent" class="listContent" #formRef="ngForm" (ngSubmit)="saveTripHill(formRef)">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('id')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripHill)?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Provider Id')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripHill)?.providerId}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">
+        {{translateUtil.translateKey('Mountain')}}
+      </ion-label>
+      <ion-select name="tripHillId" [(ngModel)]="tripHill.mountainId">
+        <ion-select-option *ngFor="let mountain of mountains" [value]="mountain.id">{{mountain.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">
+        {{translateUtil.translateKey('locationStr')}}
+      </ion-label>
+      <ion-textarea class="small" [(ngModel)]="tripHill.locationStr"  name="locationStr"
+                    #locationRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+    <ion-item *ngIf="locationRef.errors?.maxlength" text-wrap lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="tripHill">
+      <ion-label stacked>{{translateUtil.translateKey('Ticket by age group')}}</ion-label>
+      <ion-checkbox [(ngModel)]="tripHill.ticketByAgeGroup" name="activated"></ion-checkbox>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">
+        {{translateUtil.translateKey('DESCRIPTION')}}
+      </ion-label>
+      <ion-textarea class="medium" [(ngModel)]="tripHill.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+    <ion-item *ngIf="locationRef.errors?.maxlength" text-wrap lines="none">
+      <ion-label color="danger" *ngIf="descriptionRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+
+
+    <ion-item *ngIf="tripHill">
+      <ion-label stacked>{{translateUtil.translateKey('Activated')}}</ion-label>
+      <ion-checkbox [(ngModel)]="tripHill.activated" name="activated"></ion-checkbox>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

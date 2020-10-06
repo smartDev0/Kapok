@@ -1,0 +1,9 @@
+/* Without setting height the slides will take up the height of the slide's content */
+ion-slides {
+  //height: 100%;
+  width: 100%;
+}
+
+.swiper-zoom-container{
+  justify-content: left !important;
+}

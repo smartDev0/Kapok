@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Recent Comments')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar color="lightOrange" no-border-top>
+    <ion-title>
+      <ion-select class="customSelect" [(ngModel)]="showTimeSelection" name="selectTime" (ngModelChange)="onselectionchange()">
+        <ion-select-option *ngFor="let selection of selections" [value]="selection.id">{{selection.name}}</ion-select-option>
+      </ion-select>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngFor="let item of (comments); let i = index; " class="listContent">
+    <ion-item *ngIf="!item.hide">
+      <h2 text-wrap style="font-weight: bold;" [innerHtml]="utils.highlightSearch(item?.title, searchKey)"></h2>
+      <p text-wrap [innerHtml]="utils.highlightSearch(item?.ownerUserName, searchKey)"></p>
+      <p>{{utils.formatDateLong(item?.lastUpdatedDate)}}</p>
+      <h2 text-wrap [innerHtml]="utils.highlightSearch(item?.courseName, searchKey)"></h2>
+      <p text-wrap>{{item?.commentEntityTypeName}}</p>
+      <h2 text-wrap [innerHtml]="utils.highlightSearch(item?.comments, searchKey)"></h2>
+      <ion-button slot="start" (click)="onViewCouse(item)" *ngIf="isCourseComment(item)">{{translateUtil.translateKey("View Program")}}</ion-button>
+      <ion-button slot="end" (click)="onViewThread(item)">{{translateUtil.translateKey("View Thread")}}</ion-button>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

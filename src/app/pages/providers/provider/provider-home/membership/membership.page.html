@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Membership</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="membership" #formRef="ngForm" (ngSubmit)="saveMembership()">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Provider Member Type')}}</ion-label>
+      <ion-select name="providerMemberTypeId" #providerMemberTypeRef="ngModel" [(ngModel)]="membership.providerMemberTypeId"
+                  (ngModelChange)="memberTypeChanged(membership.providerMemberTypeId)">
+<!--        <ion-select-option [value]=null>NA</ion-select-option>-->
+        <ion-select-option *ngFor="let providerMemberType of providerMemberTypes" [value]="providerMemberType.id">{{providerMemberType.name}}</ion-select-option>
+      </ion-select>
+      <p>{{selectedMembershipType?.description}}</p>
+    </ion-item>
+<!--    <ion-item *ngIf="providerMemberTypeRef.errors?.required && submitted" lines="none">-->
+<!--      <ion-label color="danger" >{{translateUtil.translateKey('Provider member type required')}}</ion-label>-->
+<!--    </ion-item>-->
+  </form>
+  <ion-text *ngIf="!membership">No membership</ion-text>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

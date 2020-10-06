@@ -1,0 +1,425 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Program Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <ion-list *ngIf="course" class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{(course)?.name}}
+      </ion-list-header>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Recommend')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.featured)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId)">
+        <ion-label >
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program Id')}}</h2>
+          </ion-text>
+          <ion-text>{{translateUtil.translateKey('ID')}}: {{(course)?.id}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(course)?.instructorName">
+        <ion-grid class="noHorizontalPadding">
+          <ion-row *ngIf="(course)?.instructorName">
+            <ion-col class="noHorizontalPadding">
+              <ion-label>
+                <ion-text>
+                  <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Instructor')}}</h2>
+                </ion-text>
+                <ion-text><p>{{(course)?.instructorName}}</p></ion-text>
+                <p *ngIf="provider?.showRating && course?.instructorId" style="padding-left: 15px !important;">
+                  <span class="stars alignleft" >
+                      <span [ngStyle]="{ width: utils.getStars(course?.instructorReviewScore) }"></span>
+                  </span>
+                  <span padding-start class="alignleft">
+                      <span>{{translateUtil.translateKey('reviews: ')}} {{(course?.instructorReviewScore==null)?0:course?.instructorReviewCount}}</span>
+                  </span>
+                </p>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isSiteAdmin()">
+            <ion-col class="noHorizontalPadding">
+              <ion-button (click)="onChooseInstructor()">
+                {{translateUtil.translateKey('Choose Instructor')}}
+              </ion-button>
+              <ion-button (click)="onDeleteInstructor()" [disabled]="!(course)?.instructorId">
+                {{translateUtil.translateKey('Remove Instructor')}}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item *ngIf="(course)?.courseTime">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Time')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((course)?.courseTime)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(course)?.learnTypeName">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Learn type')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.learnTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Minimum Count')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.minStudentCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()) &&
+                        (course)?.minStudentCount && (course)?.minStudentCount>courseStudentCount" lines="none">
+        <ion-text align-self-start color="danger" >
+          {{translateUtil.translateKey('Minimum count')}}: {{(course)?.minStudentCount}}, {{translateUtil.translateKey('Current count')}}: {{courseStudentCount}}
+        </ion-text>
+      </ion-item>
+
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program type')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.providerCourseTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="userId && (appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId))">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('For trip only')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.forTrip)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Is Camp')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.isCamp)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Allow select sessions?')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.allowSelectSessions)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Created type')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.createdTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(course)?.tripHillName">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Organized Trip Destination')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.tripHillName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="course.deadLine">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Registration Deadline')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate(course.deadLine)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Total Student Limit')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.totalStudentLimit}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Registration Student Limit')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.registStudentLimit}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(course)?.conditionStr">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Prerequisites')}}</h2>
+          </ion-text>
+          <ion-text text-wrap>{{(course)?.conditionStr}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Unit Price')}}</h2>
+          </ion-text>
+          <ion-text>${{(course)?.unitPrice}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Status')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.statusName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Is Open')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.open)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Keep open')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.keepOpen)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId) ">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Register Code')}}</h2>
+          </ion-text>
+          <ion-text>{{(course)?.registerCode}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId) ">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Accept Question')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((course)?.acceptQuestion)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <!--<ion-item>-->
+        <!--<ion-label>-->
+          <!--<ion-text>-->
+            <!--<h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Accept Video in Question')}}</h2>-->
+          <!--</ion-text>-->
+          <!--<ion-text>{{utils.getYesNo((course)?.acceptVideo)}}</ion-text>-->
+        <!--</ion-label>-->
+      <!--</ion-item>-->
+      <ion-item *ngIf="course?.description">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Description')}}</h2>
+          </ion-text>
+          <ion-text text-wrap>{{(course)?.description}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="(appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId))">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Confirm email message')}}</h2>
+          </ion-text>
+          <ion-text text-wrap>{{(course)?.emailMessage}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-button *ngIf="!isFavorite" size="small" expand="block" (click)="onAddFavorite()">Add to favorite</ion-button>
+      <ion-button *ngIf="isFavorite" size="small" expand="block" (click)="onRemoveFavorite()">Remove from favorite</ion-button>
+    </ion-list>
+
+    <ion-item *ngIf="provider?.showCourseTag && course?.tags">
+      <ion-label text-wrap>
+        <ion-chip *ngFor="let tag of utils.getTagListFromString(course.tags)" color="primary" outline>
+          <ion-label color="orange">{{tag.trim()}}</ion-label>
+        </ion-chip>
+      </ion-label>
+    </ion-item>
+<!--    &lt;!&ndash;    Youtube videos &ndash;&gt;-->
+<!--    <ion-list *ngIf="youtubeLinks && youtubeLinks.length>0">-->
+<!--      <ion-list-header color="primary">Youtube Videos</ion-list-header>-->
+<!--      <div class="resp-container">-->
+<!--        <iframe class="resp-iframe" *ngFor="let youtubeLine of youtubeLinks" [src]="utils.santizeURL(youtubeLine)" frameborder="0" allowfullscreen></iframe>-->
+<!--      </div>-->
+<!--    </ion-list>-->
+
+    <!-- extra instructors-->
+    <ion-list *ngIf="(appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin())" class="listContent">
+      <ion-list-header color="secondary" class="listHeader" (click)="onToggleCourseInstructors()">
+        {{(course?.instructors?.length>0?((expendedCourseInstructors?"-":"+")):'')}}{{translateUtil.translateKey('Extra instructors')}}
+      </ion-list-header>
+      <div *ngIf="expendedCourseInstructors">
+        <ion-item *ngFor="let instructor of course?.instructors" [detail]="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+          <ion-label padding-bottom>
+            <ion-text>
+              <h2 *ngIf="instructor.name" class="fieldLabel">{{instructor.name}}</h2>
+              <h2 *ngIf="instructor.skiLevel" class="fieldLabel">CSIA: {{instructor.skiLevel}}</h2>
+              <h2 *ngIf="instructor.boardLevel" class="fieldLabel">CASI: {{instructor.boardLevel}}</h2>
+            </ion-text>
+          </ion-label>
+          <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)" slot="start" (click)="onDeleteCourseInstructor(instructor)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+      </div>
+      <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)" size="small" expand="block" (click)="onAddCourseInstructor()">+</ion-button>
+    </ion-list>
+
+    <!--Sessions-->
+    <ion-list class="listContent">
+      <ion-list-header color="secondary" class="listHeader" (click)="onToggleSessionTimes(course)">
+        {{(course?.sessionTimesExpended?"-":"+")}}{{translateUtil.translateKey('Sessions')}}
+      </ion-list-header>
+      <div *ngIf="course?.sessionTimesExpended">
+        <ion-item *ngFor="let session of course?.sessionTimes" [detail]="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+          <ion-label padding-bottom (click)="onEditSession(session)">
+            <ion-text>
+              <h2 *ngIf="session.name" class="fieldLabel">{{session.name}}</h2>
+              <h2 *ngIf="session.instructorName" class="fieldLabel">Mandatory: {{utils.getYesNo(session.instructorName)}}</h2>
+              <h2 *ngIf="session.startTime" class="fieldLabel">Date: {{utils.formatDateShort(session.startTime)}}</h2>
+              <h2 *ngIf="session.startTime" class="fieldLabel">{{utils.formatTimeOfDate(session.startTime)}} to {{utils.formatTimeOfDate(session.endTime)}}</h2>
+              <h2 *ngIf="session.tripHillName" class="fieldLabel">{{session.tripHillName}}</h2>
+              <h2 *ngIf="session.mandatory" class="fieldLabel">Mandatory: {{utils.getYesNo(session.mandatory)}}</h2>
+            </ion-text>
+            <ion-text>{{session.description}}</ion-text>
+          </ion-label>
+          <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)" slot="start" (click)="onDeleteSessionTime(session)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+      </div>
+      <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)" size="small" expand="block" (click)="onAddSession()">+</ion-button>
+    </ion-list>
+
+<!--    <ion-list>-->
+<!--      <ion-list-header color="secondary" class="listHeader">-->
+<!--        {{translateUtil.translateKey('Attached files')}}-->
+<!--      </ion-list-header>-->
+<!--      <ion-grid *ngFor="let attachedFile of attachedFiles" >-->
+<!--        <ion-row >-->
+<!--          <ion-col size="1">-->
+<!--            <ion-icon *ngIf="appSession.l_hasAboveInstructorAccess(providerId)" (click)="deleteAttachedFile(attachedFile.id)"-->
+<!--                      class="delete-img" name="trash"></ion-icon>-->
+<!--          </ion-col>-->
+<!--          <ion-col>-->
+<!--            <a (click)="downloadLocalFile(attachedFile.id)" download>-->
+<!--              {{attachedFile.name}}-->
+<!--            </a>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--        <ion-row>-->
+<!--          <ion-col *ngIf="!attachedFile.isEdit">-->
+<!--            <ion-text>{{attachedFile.description}}</ion-text>-->
+<!--          </ion-col>-->
+<!--          <ion-col *ngIf="attachedFile.isEdit && appSession.l_hasAboveInstructorAccess(providerId)">-->
+<!--            <ion-textarea placeholder="Enter description here..." name="description" [(ngModel)]="attachedFile.tempDescription"></ion-textarea>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--        <ion-row *ngIf="appSession.l_hasAboveInstructorAccess(providerId)" >-->
+<!--          <ion-col *ngIf="!attachedFile.isEdit">-->
+<!--            <ion-button size="small" (click)="onUpdateDescription(attachedFile)">-->
+<!--              Description-->
+<!--            </ion-button>-->
+<!--          </ion-col>-->
+<!--          <ion-col *ngIf="attachedFile.isEdit">-->
+<!--            <ion-button size="small" (click)="onSaveDescription(attachedFile)">-->
+<!--              Save-->
+<!--            </ion-button>-->
+<!--            <ion-button size="small" (click)="onCancelDescription(attachedFile)">-->
+<!--              Cancel-->
+<!--            </ion-button>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--      </ion-grid>-->
+<!--      <ion-grid *ngFor="let video of attachedVideos" >-->
+<!--        <ion-row >-->
+<!--          <ion-col>-->
+<!--            <video id="videoQ" style="width: 100%; height: 200px" preload="metadata" controls controlsList="nodownload noremoteplayback">-->
+<!--              <source src="{{getVideoURL(video.id)}}">-->
+<!--              Your browser does not support HTML5 video.-->
+<!--            </video>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--        <ion-row>-->
+<!--          <ion-col *ngIf="!video.isEdit">-->
+<!--            <ion-text>{{video.description}}</ion-text>-->
+<!--          </ion-col>-->
+<!--          <ion-col *ngIf="video.isEdit && appSession.l_hasAboveInstructorAccess(providerId)">-->
+<!--            <ion-textarea placeholder="Enter description here..." name="description" [(ngModel)]="video.tempDescription"></ion-textarea>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--        <ion-row *ngIf="appSession.l_hasAboveInstructorAccess(providerId)" >-->
+<!--          <ion-col *ngIf="!video.isEdit">-->
+<!--            <ion-button size="small" (click)="onUpdateDescription(video)">-->
+<!--              Update Description-->
+<!--            </ion-button>-->
+<!--            <ion-button size="small" (click)="deleteAttachedFile(video.id)">-->
+<!--              <ion-icon *ngIf="appSession.l_hasAboveInstructorAccess(providerId)"-->
+<!--                        class="delete-img" name="trash"></ion-icon>-->
+<!--              Delete-->
+<!--            </ion-button>-->
+<!--          </ion-col>-->
+<!--          <ion-col *ngIf="video.isEdit">-->
+<!--            <ion-button size="small" (click)="onSaveDescription(video)">-->
+<!--              Save-->
+<!--            </ion-button>-->
+<!--            <ion-button size="small" (click)="onCancelDescription(video)">-->
+<!--              Cancel-->
+<!--            </ion-button>-->
+<!--          </ion-col>-->
+<!--        </ion-row>-->
+<!--      </ion-grid>-->
+<!--      <ion-button size="small" expand="block" *ngIf="appSession.l_hasAboveInstructorAccess(providerId)">-->
+<!--        <ion-icon name="document"></ion-icon>Attach file-->
+<!--        <input id="file-chooser" type="file" accept="*/*" (change)="onAttachFile($event)">-->
+<!--      </ion-button>-->
+<!--    </ion-list>-->
+
+    <!--Registrations-->
+    <ion-list *ngIf="appSession.l_hasAboveInstructorAccess(providerId)" class="listContent" (click)="onToggleRegistrations(course)">
+      <ion-list-header color="secondary" class="listHeader">
+        {{(course?.registrationsExpended?"-":"+")}}{{translateUtil.translateKey('Registrations')}}
+      </ion-list-header>
+      <div *ngIf="course?.registrationsExpended">
+        <ion-item *ngFor="let registration of course?.registrations" style="padding-left: 5px !important;" detail>
+          <ion-row align-items-center>
+            <ion-col class="eventsCol" col-10 (click)="onViewRegDetails($event, registration)" text-wrap>
+              {{getRegistrationLine(registration)}}
+            </ion-col>
+            <!--<ion-col col-2>-->
+            <!--<button ion-button item-end outline icon-only default (click)="removeRegistration(registration?.id)"><ion-icon name="trash"></ion-icon></button>-->
+            <!--</ion-col>-->
+          </ion-row>
+        </ion-item>
+      </div>
+      <!--<button ion-button full (click)="onAddRegistration()">+</button>-->
+    </ion-list>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

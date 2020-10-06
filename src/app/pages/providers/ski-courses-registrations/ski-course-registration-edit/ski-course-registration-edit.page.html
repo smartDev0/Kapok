@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Edit Registration')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" *ngIf="registrationRequest" #formRef="ngForm" (ngSubmit)="saveSkiRegistration(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Title')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="registrationRequest.title"
+                 name="title"
+                 #titleRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+      <ion-label color="danger" *ngIf="titleRef.errors?.required && submitted">{{translateUtil.translateKey('Title required')}}</ion-label>
+      <ion-label color="danger" *ngIf="titleRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('Title')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" text-wrap>{{translateUtil.translateKey('I\'m 18 years or older, and I have read and agree with the consent')}}
+        <ion-text color="danger">*</ion-text></ion-label>
+      <ion-checkbox [(ngModel)]="registrationRequest.isConsent" name="consent" #consentRef="ngModel" required></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-button expand="block" size="small" (click)="onViewConsent()">
+        {{translateUtil.translateKey('View consent')}}</ion-button>
+    </ion-item>
+    <ion-item *ngIf="consentRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('Consent required')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Program type')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select name="skiCourseType" id="skiCourseTypeId" #courseTypeRef="ngModel" [(ngModel)]="registrationRequest.providerCourseTypeId" (ngModelChange)="courseTypeChanged()" required>
+        <!-- This should be providerCourseTypeList! -->
+        <!--<ion-option disabled></ion-option>-->
+        <!--<ion-option *ngFor="let skiCourseType of courseTypes" [value]="skiCourseType.id">{{skiCourseType.name}}</ion-option>-->
+      </ion-select>
+      <ion-label color="danger" *ngIf="courseTypeRef.errors?.required && submitted">{{translateUtil.translateKey('Program type required')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Learn type')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select name="skiLevel" id="learnTypeId" #skiLevelRef="ngModel" [(ngModel)]="registrationRequest.learnTypeId" (ngModelChange)="onLearnTypeChanged()" required>
+        <ion-select-option *ngFor="let learnType of codeTableService.ct_LearnType" [value]="learnType.id">{{learnType.name}}</ion-select-option>
+      </ion-select>
+      <ion-label color="danger" *ngIf="!registrationRequest.learnTypeId && submitted">{{translateUtil.translateKey('Learn type required')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <button type="button" ion-button (click)="deleteCourseType()">
+        {{translateUtil.translateKey('Delete program type')}}
+      </button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Comments')}}</ion-label>
+      <ion-textarea class="small" [(ngModel)]="registrationRequest.comments"  name="comments"
+                    #commentsRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="commentsRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+  </form>
+
+  <!--Student names-->
+  <ion-list class="listContent" #studentsRef>
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('Students (include member self)')}}
+    </ion-list-header>
+    <ion-item id="student_{{i}}" *ngFor="let student of registrationRequest?.students; let i = index" (click)="onUpdateStudent(student)">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-6>
+            <p class="fieldLabel">{{translateUtil.translateKey('Student Name')}}</p>
+            <h2 [ngClass]="{'danger':(student_errs[i])}">{{student.name}}</h2>
+          </ion-col>
+          <ion-col *ngIf="student.useBirthDay" col-6>
+            <p class="fieldLabel">{{translateUtil.translateKey('Birthday')}}</p>
+            <h2>{{utils.formatDateShort(student.birthDay)}}</h2>
+          </ion-col>
+          <ion-col *ngIf="!student.useBirthDay" col-6>
+            <p class="fieldLabel">{{translateUtil.translateKey('Age')}}</p>
+            <h2>{{student.ageRangeOptionName}}</h2>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-4>
+            <p class="fieldLabel">{{translateUtil.translateKey('Level')}}</p>
+            <h2>{{student.levelOptionName}}</h2>
+          </ion-col>
+          <ion-col col-4>
+            <p class="fieldLabel">{{translateUtil.translateKey('Need Lift Ticket?')}}</p>
+            <h2>{{utils.getYesNo(student.liftTicket)}}</h2>
+          </ion-col>
+          <ion-col col-4>
+            <p class="fieldLabel">{{translateUtil.translateKey('Need Ski/Snowboard Rental?')}}</p>
+            <h2>{{utils.getYesNo(student.skiRental)}}</h2>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-12>
+            <ion-button slot="end" size="small" (click)="onDeleteStudentName(student)"><ion-icon name="trash"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item no-lines *ngIf="namesEmptyError && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('StudentNames required')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-button id="addStudentBtnId" type="button" expand="block" (click)="l_addUpdateStudent()">
+        {{translateUtil.translateKey('Add Student')}}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

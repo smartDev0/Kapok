@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Instructor Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <div *ngIf="provider?.showInstructorPhoto" class="game-image" style="margin-bottom: 10px;">
+      <ion-img *ngIf="instructor?.iconFullUrl" [src]="instructor?.iconFullUrl"></ion-img>
+    </div>
+
+    <ion-list class="listContent">
+      <ion-list-header color="secondary" class="listHeader" *ngIf="canEdit()">
+        {{translateUtil.translateKey('ID')}}: {{(instructor)?.id}}
+      </ion-list-header>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Name')}}</h2>
+          </ion-text>
+          <ion-text>{{(instructor)?.name}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('User Name')}}</h2>
+          </ion-text>
+          <ion-text>{{(instructor)?.userName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(instructor)?.skiLevel>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Ski Level')}}</h2>
+          </ion-text>
+          <ion-text>CSIA {{(instructor)?.skiLevel}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(instructor)?.skiLevel>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Ski Level Certified On')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatYearMonth((instructor)?.skiCertificatedDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(instructor)?.boardLevel>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Snowboard Level')}}</h2>
+          </ion-text>
+          <ion-text>CASI {{(instructor)?.boardLevel}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(instructor)?.boardLevel>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Snowboard Certified on')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatYearMonth((instructor)?.snowboardCertificatedDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="canEdit()">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Expire Date')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((instructor)?.expireDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="canEdit()">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Activated')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((instructor)?.activated)}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-divider color="secondary" *ngIf="(instructor)?.description">{{translateUtil.translateKey('DESCRIPTION')}}</ion-item-divider>
+      <ion-item text-wrap *ngIf="instructor?.description">
+        <ion-text>{{(instructor)?.description}}</ion-text>
+      </ion-item>
+
+      <ion-item margin-top lines="none">
+        <div *ngIf="provider?.showRating" style="padding-left: 15px !important;">
+        <span class="stars alignleft" (click)="onShowComments(instructor.id)">
+            <span [ngStyle]="{ width: utils.getStars(instructor?.score) }"></span>
+        </span>
+          <span padding-start class="alignleft" (click)="onShowComments(instructor.id)">
+            <span>{{translateUtil.translateKey('reviews: ')}} {{(instructor?.reviewCount==null)?0:instructor?.reviewCount}}</span>
+        </span>
+        </div>
+
+        <ion-button size="small" type="button" slot="end" (click)="onViewMyCourses(instructor.id)">{{translateUtil.translateKey('All My Programs')}}</ion-button>
+      </ion-item>
+
+      <ion-button *ngIf="!isFavorite" size="small" expand="block" (click)="onAddFavorite()">Add to favorite</ion-button>
+      <ion-button *ngIf="isFavorite" size="small" expand="block" (click)="onRemoveFavorite()">Remove from favorite</ion-button>
+
+    </ion-list>
+
+    <!--&lt;!&ndash;    Youtube videos &ndash;&gt;-->
+    <!--<ion-list *ngIf="youtubeLinks && youtubeLinks.length>0">-->
+      <!--<ion-list-header color="primary">Youtube Videos</ion-list-header>-->
+      <!--<div class="resp-container">-->
+        <!--<iframe class="resp-iframe" *ngFor="let youtubeLine of youtubeLinks"-->
+                <!--[src]="utils.santizeURL(youtubeLine)" frameborder="0" allowfullscreen></iframe>-->
+      <!--</div>-->
+    <!--</ion-list>-->
+
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

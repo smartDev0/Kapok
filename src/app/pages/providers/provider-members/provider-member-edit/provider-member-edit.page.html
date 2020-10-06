@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Edit membership')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="member" #formRef="ngForm" (ngSubmit)="saveMember(formRef)">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('User Name')}}</h2>
+        </ion-text>
+        <ion-text>{{(member)?.userName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_isAdministrator(providerId)">
+      <ion-button type="button" (click)="onSearchUser()">
+        {{translateUtil.translateKey('Search member user')}}
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Provider Member Type')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select name="providerMemberTypeId" #providerMemberTypeRef="ngModel" [(ngModel)]="memberTypeId" required>
+        <ion-select-option *ngFor="let providerMemberType of providerMemberTypes" [value]="providerMemberType.id">{{providerMemberType.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="providerMemberTypeRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Provider member type required')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('START_TIME')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #memberStartTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="startTime"
+                    name="memberStartTime"
+                    min="2017"
+                    max="2029-01-10"
+                    [disabled]="!appSession.l_isAdministrator(providerId)">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Expire Date')}}</ion-label>
+      <ion-icon slot="end" name="calendar"></ion-icon>
+      <ion-datetime #memberExpireTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="expireTime"
+                    name="memberExpireTime"
+                    min="2017"
+                    max="2029-01-10"
+                    [disabled]="!appSession.l_isAdministrator(providerId)">
+      </ion-datetime>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Payment status')}}</h2>
+        </ion-text>
+        <ion-text>{{(member)?.paymentStatusName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="member.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+    <ion-item *ngIf="descriptionRef.errors?.maxlength" text-wrap>
+      <ion-label color="danger" >{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_isAdministrator(providerId)">
+      <h2 padding-end class="fieldLabel">{{translateUtil.translateKey('Activated')}}</h2>
+      <ion-toggle
+          name="activated"
+          [(ngModel)]="member.activated"
+      ></ion-toggle>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

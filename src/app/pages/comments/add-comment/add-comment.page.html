@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey(title)}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list-header *ngIf="forName">{{forName}}</ion-list-header>
+  <form *ngIf="comment" #formRef="ngForm" (ngSubmit)="onSend(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('TITLE')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-textarea class="small" [(ngModel)]="comment.title" name="title" required
+                    #titleRef="ngModel"
+                    maxlength="200"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="titleRef.errors?.required && submitted">{{translateUtil.translateKey('TITLE_REQUIRED_MESG')}}</ion-text>
+      <ion-text align-self-start color="danger" *ngIf="titleRef.errors?.maxlength && submitted" >{{translateUtil.translateKey('TITLE')}} {{translateUtil.translateKey('MAX_200')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('CONTENT')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="comment.comments"  name="content"
+                    #contentRef="ngModel"
+                    maxlength="1000"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="contentRef.errors?.maxlength" >{{translateUtil.translateKey('CONTENT')}} {{translateUtil.translateKey('MAX_1000')}}</ion-text>
+    </ion-item>
+    <ion-item *ngIf="showRate" lines="none">
+      <ion-label >{{translateUtil.translateKey('Score')}}: {{comment.score}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-range name="commentScore" min="10" max="50" step="1" [(ngModel)]="rangeScore" (ngModelChange)="rateChanged()">
+        <ion-icon slot="start" src="assets/icon/star.svg" size="small" color="gold"></ion-icon>
+        <ion-icon slot="end" src="assets/icon/star.svg" color="gold"></ion-icon>
+      </ion-range>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

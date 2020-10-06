@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Consent')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngIf="consent">
+      <ion-textarea class="large" [(ngModel)]="consent.consent"  name="consent"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="descriptionRef.errors?.maxlength" >{{translateUtil.translateKey('MAX_1000')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="onViewConsent()">{{translateUtil.translateKey('Consent Preview')}}</ion-button>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

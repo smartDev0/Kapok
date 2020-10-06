@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Instructor autobiography')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!--Main content.-->
+<ion-content >
+  <ion-item lines="none">
+    <p class="bio" *ngIf="autobioText" [innerHTML] = "'<p>' + autobioText + '</p>'"></p>
+  </ion-item>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

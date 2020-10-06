@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('New Question')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <form class="listContent" #formRef="ngForm" (ngSubmit)="onSaveForm(formRef)">
+    <ion-item *ngIf="question">
+      <ion-label position="stacked">{{translateUtil.translateKey('Title')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" name="title" [(ngModel)]="question.title" required
+                 #titleRef="ngModel"
+                 maxlength="200"></ion-input>
+      <ion-text align-self-start color="danger" *ngIf="titleRef.errors?.required && submitted" >{{translateUtil.translateKey('Title required')}}</ion-text>
+      <ion-text align-self-start color="danger" *ngIf="titleRef.errors?.maxlength && submitted" >{{translateUtil.translateKey('Title')}} {{translateUtil.translateKey('MAX_200')}}</ion-text>
+    </ion-item>
+  </form>
+
+  <ion-item *ngIf="answer">
+    <ion-label position="stacked">{{translateUtil.translateKey('Content')}}</ion-label>
+    <ion-textarea class="small" [(ngModel)]="answer.content"  name="content"
+                  #contentRef="ngModel"
+                  maxlength="1000"></ion-textarea>
+    <ion-text align-self-start color="danger" *ngIf="contentRef.errors?.maxlength">{{translateUtil.translateKey('Content')}} {{translateUtil.translateKey('MAX_1000')}}</ion-text>
+  </ion-item>
+
+  <div *ngIf="canAddVideo()">
+    <ng-container *ngIf="currentPlatform == 'browser'; else device">
+      <ion-button class="pointer" #pickerButtonFile expand=full>
+        <ion-icon name="videocam"></ion-icon>Choose Video
+        <input id="file-chooser" type="file" accept="video/*" (change)="videoChosen($event)">
+      </ion-button>
+    </ng-container>
+    <ng-template #device>
+      <ion-button #pickerButtonNative (click)="nativeImagePicker()" expand=full>
+        <ion-icon name="image"></ion-icon>Pick Video
+      </ion-button>
+    </ng-template>
+    <!--    <ion-button (click)="videoUpload()" expand=full [disabled]="!enableUploadBtn()">-->
+    <!--      <ion-icon name="cloud-upload"></ion-icon>Upload-->
+    <!--    </ion-button>-->
+    <ion-item lines="none" *ngFor="let fileName of fileNames; let i = index">
+      <ion-icon slot="start" color="danger" (click)="deleteFile(i)" class="delete-img pointer" name="close"></ion-icon>
+      <ion-text>{{fileName}}</ion-text>
+    </ion-item>
+  </div>
+  <div class="scroll-content"></div>
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;"  (click)="onSave()">
+          {{translateUtil.translateKey('Save')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onCancel()">
+          {{translateUtil.translateKey('Cancel')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

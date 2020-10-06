@@ -1,0 +1,357 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Trip registration detail')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="tripRegistration" class="listContent">
+    <!--<ion-list-header *ngIf="appSession.l_isSiteAdmin()" color="secondary" class="listHeader">-->
+      <!--{{translateUtil.translateKey('ID')}}: {{(tripRegistration)?.id}}-->
+    <!--</ion-list-header>-->
+    <ion-item *ngIf="(tripRegistration)?.tripId">
+      <ion-button size="small" color="primary" (click)="onViewTrip((tripRegistration)?.tripId)">
+        {{translateUtil.translateKey('View trip')}}
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Consented')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo(tripRegistration?.consent)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('First name')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripRegistration)?.firstName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Last name')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripRegistration)?.lastName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Phone number')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripRegistration)?.phoneNumber}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Email address')}}</h2>
+        </ion-text>
+        <ion-text>{{(tripRegistration)?.email}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Wechat id')}}</h2>
+        </ion-text>
+        <ion-text>{{tripRegistration?.weChatId}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Is club member?')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo(tripRegistration?.clubMember)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Membership paid?')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo(tripRegistration?.memberShipPaid)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Number of members over 13 years old')}}</h2>
+        </ion-text>
+        <ion-text>{{tripRegistration?.member13OlderCount}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <div *ngIf="!(tripRegistration)?.ticketByAgeGroup">
+      <ion-item *ngIf="(tripRegistration)?.overallMemberTickets>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets members')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.overallMemberTickets}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.overallNonMemberTickets>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets non-members')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.overallNonMemberTickets}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <div *ngIf="(tripRegistration)?.ticketByAgeGroup">
+      <ion-item *ngIf="(tripRegistration)?.ticketsMemberGrp1>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets member age <6')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsMemberGrp1}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsMemberGrp2>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets member age 7~12')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsMemberGrp2}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsMemberGrp3>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets member age 13+')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsMemberGrp3}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsMemberGrp4>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets member age 18+')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsMemberGrp4}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="(tripRegistration)?.ticketsNonMemberGrp1>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets non-Member age <6')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsNonMemberGrp1}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsNonMemberGrp2>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets non-Member age 7~12')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsNonMemberGrp2}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsNonMemberGrp3>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets non-Member age 13+')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsNonMemberGrp3}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(tripRegistration)?.ticketsNonMemberGrp4>0">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift tickets non-Member age 18+')}}</h2>
+          </ion-text>
+          <ion-text>{{(tripRegistration)?.ticketsNonMemberGrp4}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Registration created time')}}</h2>
+        </ion-text>
+        <ion-text>{{tripRegistration?.createdDate}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Cancelled?')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo(tripRegistration?.cancelled)}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <!--Car Pool-->
+    <ion-item-divider *ngIf="false" color="medium" >
+      {{translateUtil.translateKey('Need/Provide car pool?')}}
+    </ion-item-divider>
+    <ion-item *ngIf="false">
+      <ion-label>
+        <ion-text>{{utils.getYesNo(tripRegistration?.carPool)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-list *ngIf="false && tripRegistration?.carPool" class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('Car pool')}}
+      </ion-list-header>
+      <ion-item>
+        <ion-select [(ngModel)]="tripRegistration.carPool" name="selectedUserValue" #carPoolRef="ngModel" disabled>
+          <ion-select-option [value]=1>{{translateUtil.translateKey("Need car pool")}}</ion-select-option>
+          <ion-select-option [value]=2>{{translateUtil.translateKey("Provider car pool")}}</ion-select-option>
+          <ion-select-option [value]=null>{{translateUtil.translateKey("NA")}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Pick up location (can be an intersection or an address etc.)')}}</h2>
+          </ion-text>
+          <ion-text>{{tripRegistration?.carPoolLocation}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Number of people')}}</h2>
+          </ion-text>
+          <ion-text>{{tripRegistration?.numberCarPool}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!--Rental-->
+    <ion-item-divider color="medium" >
+      {{translateUtil.translateKey('Need rental?')}}
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>
+        <ion-text>{{utils.getYesNo(tripRegistration?.needRental)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-list *ngIf="tripRegistration?.needRental" class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('Rentals details')}}
+      </ion-list-header>
+      <ion-list *ngFor="let rental of tripRegistration.rentals; let i = index">
+        <ion-item-divider color="tertiary">{{translateUtil.translateKey('Rental #')}}{{i+1}}</ion-item-divider>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('First name')}}</h2>
+            </ion-text>
+            <ion-text>{{rental.firstName}}</ion-text>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Last name')}}</h2>
+            </ion-text>
+            <ion-text>{{rental.lastName}}</ion-text>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Rental type')}}</h2>
+            </ion-text>
+          </ion-label>
+          <ion-select [(ngModel)]="rental.rentalType" name="rentalType" #rentalTypeRef="ngModel" disabled>
+            <ion-select-option [value]=1>{{translateUtil.translateKey("Ski")}}</ion-select-option>
+            <ion-select-option [value]=2>{{translateUtil.translateKey("Snowboard")}}</ion-select-option>
+            <ion-select-option [value]=null>{{translateUtil.translateKey("NA")}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Height (cm)')}}</h2>
+            </ion-text>
+            <ion-text>{{rental.height}}</ion-text>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Weight (kg)')}}</h2>
+            </ion-text>
+            <ion-text>{{rental.weight}}</ion-text>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Shoe size(US)')}}</h2>
+            </ion-text>
+            <ion-text>{{rental.shoeSize}}</ion-text>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Age range')}}</h2>
+            </ion-text>
+          </ion-label>
+          <ion-select [(ngModel)]="rental.ageRange" name="ageRange" #ageRangeRef="ngModel" disabled>
+            <ion-select-option [value]=1>{{translateUtil.translateKey("9 and younger")}}</ion-select-option>
+            <ion-select-option [value]=2>{{translateUtil.translateKey("10-49")}}</ion-select-option>
+            <ion-select-option [value]=3>{{translateUtil.translateKey("50+")}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <ion-text>
+              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Need helmet?')}}</h2>
+            </ion-text>
+            <ion-text>{{utils.getYesNo(rental.needHelmet)}}</ion-text>
+          </ion-label>
+        </ion-item>
+<!--        <ion-item>-->
+<!--          <ion-label>-->
+<!--            <ion-text>-->
+<!--              <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Is member?')}}</h2>-->
+<!--            </ion-text>-->
+<!--            <ion-text>{{utils.getYesNo(rental.isMember)}}</ion-text>-->
+<!--          </ion-label>-->
+<!--        </ion-item>-->
+      </ion-list>
+    </ion-list>
+
+    <ion-item-divider color="medium" >
+      {{translateUtil.translateKey('Program registrations')}}
+    </ion-item-divider>
+    <ion-list *ngIf="tripRegistration?.courseRegistrations" class="listContent">
+      <ion-item *ngFor="let courseRegistration of tripRegistration?.courseRegistrations" (click)="onViewCourseRegistration(courseRegistration)" detail>
+        <ion-text text-wrap>
+          <h5 class="fieldLabel">{{courseRegistration.title}}</h5>
+        </ion-text>
+        <!--<ion-text>{{(course)?.studentLimit}}</ion-text>-->
+        <!--<ion-text><p>{{courseRegistration.providerCourseTypeName}} at {{courseRegistration.courseTime}}</p></ion-text>-->
+        <!--<ion-text><p>{{courseRegistration.instructorName}} on {{courseRegistration.tripHillName}}</p></ion-text>-->
+      </ion-item>
+    </ion-list>
+  </ion-list>
+
+<!--  <ion-button size="default" expand="block" (click)="showChooseCoursePopup()">{{translateUtil.translateKey('Book Lesson')}}</ion-button>-->
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

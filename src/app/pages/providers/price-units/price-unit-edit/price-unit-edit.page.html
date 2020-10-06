@@ -1,0 +1,190 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('PriceUnit Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form color="secondary" class="listContent" *ngIf="priceUnit" #formRef="ngForm" (ngSubmit)="savePriceUnit(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('TITLE')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="priceUnit.title"
+                 name="title"
+                 #titleRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('TITLE_REQUIRED_MESG')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.maxlength">
+      <ion-label color="danger"  text-wrap>{{translateUtil.translateKey('TITLE')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('TripHill')}}</ion-label>
+      <ion-select #tripHillIdRef="ngModel" name="tripHillId" id="tripHillId" [(ngModel)]="priceUnit.tripHillId">
+        <ion-select-option *ngFor="let tripHill of tripHills" [value]="tripHill.id">{{tripHill.locationStr}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Provider member type')}}</ion-label>
+      <ion-select #providerMemberTypeIdRef="ngModel" name="providerMemberTypeId" id="providerMemberTypeId" [(ngModel)]="priceUnit.providerMemberTypeId">
+        <ion-select-option *ngFor="let providerMemberType of providerMemberTypes" [value]="providerMemberType.id">{{providerMemberType.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Provider program type')}}</ion-label>
+      <ion-select #courseTypeIdRef="ngModel" name="courseTypeId" id="courseTypeId" [(ngModel)]="priceUnit.providerCourseTypeId" >
+        <ion-select-option *ngFor="let pcType of providerCourseTypes" [value]="pcType.id">{{pcType.name}}</ion-select-option>
+      </ion-select>
+      <!--<ion-label color="danger" *ngIf="courseTypeIdRef.errors?.required && submitted">{{translateUtil.translateKey('Class type required.')}}</ion-label>-->
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Learn type')}}</ion-label>
+      <ion-select #learnTypeIdRef="ngModel" name="learnTypeId" id="learnTypeId" [(ngModel)]="priceUnit.learnTypeId" >
+        <ion-select-option *ngFor="let learnType of learnTypes" [value]="learnType.id">{{learnType.name}}</ion-select-option>
+      </ion-select>
+      <!--<ion-label color="danger" *ngIf="learnTypeIdRef.errors?.required && submitted">{{translateUtil.translateKey('Course type required.')}}</ion-label>-->
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Price')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="priceUnit.coursePrice"
+                 name="unitPrice"
+                 #unitPriceRef="ngModel"
+                 min="0"
+                 max="1000"
+      >
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Min Student Count')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="priceUnit.minStudentCount"
+                 name="studentCount"
+                 #studentCountRef="ngModel"
+                 min="0"
+                 max="50">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Max Student Count')}}</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="priceUnit.maxStudentCount"
+                 name="studentCount"
+                 #studentCountRef="ngModel"
+                 min="0"
+                 max="50">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Effective On')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #effectiveOnRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="priceUnit.effectiveTime"
+                    name="effectiveTime"
+                    minuteValues="0,30"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Expired On')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #expiredOnRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="priceUnit.expireTime"
+                    name="expireTime"
+                    minuteValues="0,30"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Discount Amount')}} $</ion-label>
+      <ion-input type="number"
+                 [(ngModel)]="priceUnit.discountAmount"
+                 name="discountAmount"
+                 #discountAmountRef="ngModel"
+                 min="0"
+                 max="1000">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Discount Percentage')}}
+        <ion-badge class="badgeColor1">{{priceUnit.discountPercentage}}</ion-badge>
+      </ion-label>
+      <ion-range pin="true" min="0" max="100" step="5" snaps="true" color="secondary" name="discountPercentage" [(ngModel)]="priceUnit.discountPercentage"></ion-range>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="priceUnit.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Comments')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="priceUnit.comments"  name="commentsRef"
+                    #commentsRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Lift Ticket Price $')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="priceUnit.liftPrice" name="liftPrice" #liftPriceRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Ski or Board Rental $')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="priceUnit.skiBoardRentalPrice" name="skiBoardRentalPrice" #skiBoardRentalPriceRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Helmet Rental $')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="priceUnit.helmentRentalPrice" name="helmentRentalPrice" #helmentRentalPriceRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Late Registration Amount $')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="priceUnit.latePriceAmount" name="latePriceAmount" #latePriceAmountRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Late Registration Percentage %')}}</ion-label>
+      <ion-input type="number" [(ngModel)]="priceUnit.latePricePercentage" name="latePricePercentage" #latePricePercentageRef="ngModel" min="0" max="1000"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-select [(ngModel)]="priceUnit.enabled" name="enabled">
+        <ion-select-option checked value="true">{{translateUtil.translateKey('Yes')}}</ion-select-option>
+        <ion-select-option value="false">{{translateUtil.translateKey('No')}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

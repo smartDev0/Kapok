@@ -1,0 +1,519 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Trip Registration')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-slides #slides pager="true" [options]="slideOpts" style="margin-left: 20px; margin-right: 20px;">
+    <ion-slide *ngIf="tripRegistration">
+      <form #formRef_1="ngForm" style="width: 95%">
+        <ion-list>
+          <ion-list-header color="secondary" class="listHeader">
+            {{translateUtil.translateKey('Basic information')}}
+          </ion-list-header>
+          <!--      <ion-item>-->
+          <!--        <ion-button expand="block" size="small" (click)="onBookProgramOnly()">-->
+          <!--          {{translateUtil.translateKey('Book lesson Only')}}</ion-button>-->
+          <!--      </ion-item>-->
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('I\'m 18 years or older, and I have read and agree with the consent')}}
+              <ion-text color="danger">*</ion-text></ion-label>
+            <ion-checkbox [(ngModel)]="tripRegistration.consent" name="consent" #consentRef="ngModel" required [disabled]="tripRegistration?.id>0"></ion-checkbox>
+          </ion-item>
+          <ion-item>
+            <ion-button expand="block" size="small" (click)="onViewConsent()">
+              {{translateUtil.translateKey('View consent')}}</ion-button>
+          </ion-item>
+          <ion-item *ngIf="consentRef.errors?.required && submits[0]">
+            <ion-label color="danger" >{{translateUtil.translateKey('Consent required')}}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('First name')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="tripRegistration.firstName"
+                       name="firstName"
+                       #firstNameRef="ngModel"
+                       maxlength="200"
+                       required>
+            </ion-input>
+          </ion-item>
+          <ion-item *ngIf="firstNameRef.errors?.required && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('First name required')}}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('Last name')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="tripRegistration.lastName"
+                       name="lastName"
+                       #lastNameRef="ngModel"
+                       maxlength="200"
+                       required>
+            </ion-input>
+          </ion-item>
+          <ion-item *ngIf="lastNameRef.errors?.required && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Last name required')}}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('Phone number')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="tripRegistration.phoneNumber"
+                       name="phoneNumber"
+                       #phoneNumberRef="ngModel"
+                       maxlength="200"
+                       required>
+            </ion-input>
+          </ion-item>
+          <ion-item *ngIf="phoneNumberRef.errors?.required && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Phone number required')}}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('Email address')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="tripRegistration.email"
+                       name="email"
+                       #emailRef="ngModel"
+                       maxlength="200"
+                       pattern="^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[A-Za-z0-9+_{|}-]+[.][A-Za-z0-9+_{|}-]+$"
+                       required>
+            </ion-input>
+          </ion-item>
+          <ion-item *ngIf="emailRef.errors?.required && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Email address required')}}</ion-label>
+          </ion-item>
+          <ion-item *ngIf="emailRef.errors?.pattern && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Wrong email address')}}</ion-label>
+          </ion-item>
+
+          <div *ngIf="isOnEmailChange()">
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Repeat email address')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="text"
+                         [(ngModel)]="repeatEmail"
+                         name="repeatEmail"
+                         (ionBlur)="onCheckRepeatEmail()"
+                         #repeatEmailRef="ngModel"
+                         maxlength="200"
+                         required>
+              </ion-input>
+            </ion-item>
+            <ion-item *ngIf="repeatEmailRef.errors?.required && submits[0]">
+              <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Repeat email address required')}}</ion-label>
+            </ion-item>
+            <ion-item *ngIf="emailRepeatError && submits[0]">
+              <ion-label color="danger" >{{emailRepeatError}}</ion-label>
+            </ion-item>
+          </div>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('WeChat id')}}</ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="tripRegistration.weChatId"
+                       name="weChatId"
+                       #weChatIdRef="ngModel"
+                       maxlength="200"
+            >
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Is club member')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-radio-group margin-top [(ngModel)]="tripRegistration.clubMember" name="clubMember" (ngModelChange)="changeClubMember()" #clubMemberRef="ngModel">
+              <ion-item lines="none">
+                <ion-label>{{translateUtil.translateKey("Yes")}}</ion-label>
+                <ion-radio slot="start" [value]=true></ion-radio>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label>{{translateUtil.translateKey("No")}}</ion-label>
+                <ion-radio slot="start" [value]=false></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-item>
+          <ion-item *ngIf="clubMemberRef.errors?.required && submits[0]">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Is club member required')}}</ion-label>
+          </ion-item>
+
+          <div *ngIf="tripRegistration.clubMember">
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Membership paid?')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-radio-group margin-top [(ngModel)]="tripRegistration.memberShipPaid" name="memberShipPaid" #memberShipPaidRef="ngModel" required>
+                <ion-item lines="none">
+                  <ion-label>{{translateUtil.translateKey("Yes")}}</ion-label>
+                  <ion-radio slot="start" [value]=true></ion-radio>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-label>{{translateUtil.translateKey("Pay this time")}}</ion-label>
+                  <ion-radio slot="start" [value]=false></ion-radio>
+                </ion-item>
+              </ion-radio-group>
+            </ion-item>
+            <ion-item *ngIf="memberShipPaidRef.errors?.required && submits[0]">
+              <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Membership paid required')}}</ion-label>
+            </ion-item>
+          </div>
+
+          <div *ngIf="tripRegistration.clubMember && !tripRegistration.memberShipPaid">
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Number of members over 13 years old?')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.member13OlderCount"
+                         name="member13OlderCount"
+                         #member13OlderCountRef="ngModel"
+                         min=1
+                         max=200
+                         required>
+              </ion-input>
+            </ion-item>
+            <ion-item *ngIf="member13OlderCountRef.errors?.required && submits[0]">
+              <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Number of members over 13 years old required')}}</ion-label>
+            </ion-item>
+          </div>
+
+          <div *ngIf="tripRegistration.clubMember===true">
+            <div *ngIf="(tripRegistration)?.ticketByAgeGroup">
+              <ion-item >
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Member age <6 tickets:')}}</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="tripRegistration.ticketsMemberGrp1"
+                           name="ticketsMemberGrp1"
+                           #ticketsMemberGrp1Ref="ngModel"
+                           min=1
+                           max=200>
+                </ion-input>
+              </ion-item>
+              <ion-item >
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Member age 7~12 tickets:')}}</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="tripRegistration.ticketsMemberGrp2"
+                           name="ticketsMemberGrp2"
+                           #ticketsMemberGrp2Ref="ngModel"
+                           min=1
+                           max=200>
+                </ion-input>
+              </ion-item>
+              <ion-item >
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Member age 13+ tickets:')}}</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="tripRegistration.ticketsMemberGrp3"
+                           name="ticketsMemberGrp3"
+                           #ticketsMemberGrp3Ref="ngModel"
+                           min=1
+                           max=200>
+                </ion-input>
+              </ion-item>
+            </div>
+
+            <div *ngIf="!(tripRegistration)?.ticketByAgeGroup">
+              <ion-item >
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Lift tickets members:')}}</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="tripRegistration.overallMemberTickets"
+                           name="overallMemberTickets"
+                           #overallMemberTicketsRef="ngModel"
+                           min=1
+                           max=200>
+                </ion-input>
+              </ion-item>
+            </div>
+          </div>
+          <ion-item *ngIf="memberTicketsError">
+            <ion-label color="danger" text-wrap>{{memberTicketsError}}</ion-label>
+          </ion-item>
+
+          <div *ngIf="(tripRegistration)?.ticketByAgeGroup">
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Non-member age <6 tickets:')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.ticketsNonMemberGrp1"
+                         name="ticketsNonMemberGrp1"
+                         #ticketsNonMemberGrp1Ref="ngModel"
+                         min=1
+                         max=200>
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Non-member age 7~12 tickets:')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.ticketsNonMemberGrp2"
+                         name="ticketsNonMemberGrp2"
+                         #ticketsNonMemberGrp2Ref="ngModel"
+                         min=1
+                         max=200>
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Non-member age 13+ tickets:')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.ticketsNonMemberGrp3"
+                         name="ticketsNonMemberGrp3"
+                         #ticketsNonMemberGrp3Ref="ngModel"
+                         min=1
+                         max=200>
+              </ion-input>
+            </ion-item>
+          </div>
+          <div *ngIf="!(tripRegistration)?.ticketByAgeGroup">
+            <ion-item >
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Lift tickets non-members:')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.overallNonMemberTickets"
+                         name="overallNonMemberTickets"
+                         #overallNonMemberTicketsRef="ngModel"
+                         min=1
+                         max=200>
+              </ion-input>
+            </ion-item>
+          </div>
+        </ion-list>
+      </form>
+    </ion-slide>
+    <ion-slide>
+      <form #formRef_2="ngForm" style="width: 95%">
+        <ion-list>
+          <!--Lesson-->
+          <!--      <ion-item-divider color="primary">{{translateUtil.translateKey('Need lesson?')}}</ion-item-divider>-->
+          <!--      <ion-item>-->
+          <!--        <ion-checkbox [(ngModel)]="tripRegistration.needLesson" name="needLesson" (ngModelChange)="onCheckNeedLesson()"></ion-checkbox>-->
+          <!--      </ion-item>-->
+          <!--      <ion-item-divider color="primary">{{translateUtil.translateKey('Need lesson?')}}</ion-item-divider>-->
+          <!--      <div padding>-->
+          <!--        <ion-button color="primary" size="small" slot="start" (click)="onChooseCourseTime(LESSONCMD_GROUP)">{{translateUtil.translateKey('Beginner Group Lesson')}}</ion-button>-->
+          <!--        <ion-button color="primary" size="small" slot="start" (click)="onChooseCourseTime(LESSONCMD_PRIVATE)">{{translateUtil.translateKey('Private Lesson')}}</ion-button>-->
+
+          <!--        <ion-item-divider *ngIf="tripRegistration.tripRegistrationCourses && tripRegistration.tripRegistrationCourses.length>0" color="medium" >-->
+          <!--          {{translateUtil.translateKey('Trip Course Requests')}}-->
+          <!--        </ion-item-divider>-->
+          <!--        <ion-grid *ngFor="let tripCourse of tripRegistration.tripRegistrationCourses">-->
+          <!--          <ion-row>-->
+          <!--            <ion-col>-->
+          <!--              <h5 no-margin><ion-text color="medium">{{translateUtil.translateKey('Course')}}</ion-text></h5>-->
+          <!--              <p no-margin><ion-text color="dark">{{tripCourse.name}}</ion-text></p>-->
+          <!--              <p no-margin><ion-text color="dark">{{utils.formatDate((tripCourse)?.courseTime)}}</ion-text></p>-->
+          <!--              <p no-margin><ion-text color="dark">{{(tripCourse)?.learnTypeName}}</ion-text></p>-->
+          <!--            </ion-col>-->
+          <!--          </ion-row>-->
+          <!--          <ion-row>-->
+          <!--            <ion-col style="padding-bottom: 0px">-->
+          <!--              <h5 no-margin><ion-text color="medium">{{translateUtil.translateKey('Students')}}</ion-text></h5>-->
+          <!--            </ion-col>-->
+          <!--          </ion-row>-->
+          <!--          <ion-row *ngFor="let student of tripCourse?.students; let i = index">-->
+          <!--            <ion-col style="padding-top: 0px">-->
+          <!--              <p no-margin><ion-text color="dark">{{student.name}}</ion-text></p>-->
+          <!--              <p no-margin><ion-text color="dark">{{student.ageRangeOptionName}}</ion-text></p>-->
+          <!--              <p no-margin><ion-text color="dark">{{student.levelOptionName}}</ion-text></p>-->
+          <!--              <p no-margin><ion-text color="dark">{{student.comments}}</ion-text></p>-->
+          <!--            </ion-col>-->
+          <!--          </ion-row>-->
+          <!--          <ion-row>-->
+          <!--            <ion-col>-->
+          <!--              <ion-button size="small" expand="block" (click)="onDeleteTripCourse(tripCourse)"><ion-icon name="trash"></ion-icon></ion-button>-->
+          <!--            </ion-col>-->
+          <!--          </ion-row>-->
+          <!--        </ion-grid>-->
+
+          <!--      </div>-->
+
+          <!--Car pool-->
+          <ion-item-divider *ngIf="false" color="primary" text-wrap>{{translateUtil.translateKey('Carpool? (for information only, no guarantee)')}}</ion-item-divider>
+          <ion-item *ngIf="false">
+            <ion-radio-group margin-top [(ngModel)]="tripRegistration.carPool" name="carPool">
+              <ion-item>
+                <ion-label>{{translateUtil.translateKey("Need carpool")}}</ion-label>
+                <ion-radio slot="start" [value]=1></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>{{translateUtil.translateKey("Offer carpool")}}</ion-label>
+                <ion-radio slot="start" [value]=2></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>{{translateUtil.translateKey("NA")}}</ion-label>
+                <ion-radio slot="start" [value]=null></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-item>
+          <ion-list *ngIf="false && tripRegistration.carPool && tripRegistration.carPool!=3" class="listContent">
+            <ion-list-header color="secondary" class="listHeader">
+              {{translateUtil.translateKey('Car pool details')}}
+            </ion-list-header>
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>
+                {{translateUtil.translateKey('Pick up location (can be an intersection or an address etc.)')}}
+                <ion-text color="danger">*</ion-text>
+              </ion-label>
+              <ion-input type="text"
+                         [(ngModel)]="tripRegistration.carPoolLocation"
+                         name="carPoolLocation"
+                         #carPoolLocationRef="ngModel"
+                         maxlength="200"
+                         required>
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Number of people')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="tripRegistration.numberCarPool"
+                         name="numberCarPool"
+                         #numberCarPoolRef="ngModel"
+                         min=1
+                         max=200
+                         required>
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <!--Rental-->
+          <ion-list-header color="secondary" class="listHeader">
+            {{translateUtil.translateKey('Rental')}}
+          </ion-list-header>
+          <ion-item>
+            <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Need rental?')}}</ion-label>
+            <ion-checkbox id="needRentalCheckBox" [(ngModel)]="tripRegistration.needRental" name="needRental" (ngModelChange)="onCheckRental()"></ion-checkbox>
+          </ion-item>
+          <ion-list *ngIf="tripRegistration.needRental" class="listContent">
+            <ion-list *ngFor="let rental of tripRegistration.rentals; let i = index">
+              <ion-item-divider color="tertiary">{{translateUtil.translateKey('Rental #')}}{{i+1}}</ion-item-divider>
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('First name')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-input type="text"
+                           [(ngModel)]="rental.firstName"
+                           name="rentalFirstName{{i}}"
+                           maxlength="200"
+                           required>
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!rental.firstName && submits[1]">
+                <ion-label color="danger" text-wrap>{{translateUtil.translateKey('First name required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Last name')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-input type="text"
+                           [(ngModel)]="rental.lastName"
+                           name="rentalLastName{{i}}"
+                           min=1
+                           maxlength="200"
+                           required>
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!rental.lastName && submits[1]">
+                <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Last name required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Rental type')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-radio-group margin-top [(ngModel)]="rental.rentalType" name="rentalType{{i}}" required>
+                  <ion-item id="rentalTypeRadio" lines="none">
+                    <ion-label>{{translateUtil.translateKey("Ski")}}</ion-label>
+                    <ion-radio slot="start" [value]=1></ion-radio>
+                  </ion-item>
+                  <ion-item lines="none">
+                    <ion-label>{{translateUtil.translateKey("Snow board")}}</ion-label>
+                    <ion-radio slot="start" [value]=2></ion-radio>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-item>
+              <ion-item *ngIf="!rental.rentalType && submits[1]">
+                <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Rental type required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Height (cm)')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="rental.height"
+                           name="height{{i}}"
+                           min=1
+                           max=250
+                           required>
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!rental.height && submits[1]">
+                <ion-label color="danger" >{{translateUtil.translateKey('Height required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Weight (kg)')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="rental.weight"
+                           name="weight{{i}}"
+                           min=1
+                           max=250
+                           required>
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!rental.weight && submits[1]">
+                <ion-label color="danger" >{{translateUtil.translateKey('Weight required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Shoe size(US)')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-select [(ngModel)]="rental.shoeSize" name="shoeSize{{i}}">
+                  <ion-select-option *ngFor="let showSize of shoeSizes" [value]=showSize>{{showSize}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item *ngIf="!rental.shoeSize && submits[1]">
+                <ion-label color="danger" >{{translateUtil.translateKey('Shoe size required')}}</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Age range')}}</ion-label>
+                <ion-radio-group margin-top [(ngModel)]="rental.ageRange" name="ageRange{{i}}">
+                  <ion-item lines="none">
+                    <ion-label>{{translateUtil.translateKey("9 and younger")}}</ion-label>
+                    <ion-radio slot="start" [value]=1></ion-radio>
+                  </ion-item>
+                  <ion-item lines="none">
+                    <ion-label>{{translateUtil.translateKey("10-49")}}</ion-label>
+                    <ion-radio slot="start" [value]=2></ion-radio>
+                  </ion-item>
+                  <ion-item lines="none">
+                    <ion-label>{{translateUtil.translateKey("50+")}}</ion-label>
+                    <ion-radio slot="start" [value]=3></ion-radio>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Need helmet?')}}</ion-label>
+                <ion-checkbox [(ngModel)]="rental.needHelmet" name="needHelmet{{i}}"></ion-checkbox>
+              </ion-item>
+              <!--          <ion-item>-->
+              <!--            <ion-label position="stacked" class="fieldLabel" text-wrap>{{translateUtil.translateKey('Is member?')}}</ion-label>-->
+              <!--            <ion-checkbox [(ngModel)]="rental.isMember" name="isMember{{i}}"></ion-checkbox>-->
+              <!--          </ion-item>-->
+              <ion-button size="small" expand="block" (click)="onDeleteRental(rental)"><ion-icon name="trash"></ion-icon></ion-button>
+            </ion-list>
+            <ion-button size="small" expand="block" (click)="onAddRental()">+</ion-button>
+          </ion-list>
+        </ion-list>
+      </form>
+    </ion-slide>
+  </ion-slides>
+
+  <div class="scroll-content"></div>
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;" (click)="goPrevious()" [disabled]="isSlideBegin || finalSubmit">
+          {{translateUtil.translateKey('Previous')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;" (click)="continueSlide()" [disabled]="finalSubmit">
+          {{(!isSlideEnd?translateUtil.translateKey('Next'):translateUtil.translateKey('Submit'))}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

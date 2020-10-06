@@ -1,0 +1,160 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Program Summary')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="course" class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('ID')}}: {{(course)?.id}}
+    </ion-list-header>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program Name')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.name}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Created by')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.instructorName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program type')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.providerCourseTypeName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Learn type')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.learnTypeName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Organized Trip Destination')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.tripHillName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Deadline')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(course.deadLine)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Student Limit')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.minStudentCount}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(course)?.conditionStr">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Condition')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.conditionStr}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Price')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.unitPrice}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Status')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.statusName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Is Open')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((course)?.open)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('DESCRIPTION')}}</h2>
+        </ion-text>
+        <ion-text>{{(course)?.description}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--Sessions-->
+  <ion-list class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('Sessions')}}
+    </ion-list-header>
+    <ion-item *ngFor="let session of course?.sessionTimes">
+      <ion-text><h2>{{utils.formatDateShort(session.startTime)}} {{utils.formatTimeOfDate(session.startTime)}} {{translateUtil.translateKey('to')}}
+        {{utils.formatTimeOfDate(session.endTime)}}
+        {{session.tripHillName}}
+        {{utils.getYesNo(session.mandatory)}}</h2></ion-text>
+    </ion-item>
+  </ion-list>
+
+  <ion-list-header color="secondary" class="listHeader">
+    {{translateUtil.translateKey('Registrations')}}
+  </ion-list-header>
+  <!--Registrations-->
+  <ion-list class="listContent" *ngFor="let registration of course?.registrations">
+    <ion-item  style="padding-left: 5px !important;">
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom >{{translateUtil.translateKey('Registration details')}}</h2>
+        </ion-text>
+        <ion-text>{{registration?.title}}, Paid: {{utils.getYesNo(registration?.paymentStatusId==appConstants.PAYMENT_FULLY_ID)}},
+          name: {{registration?.contactName}}, email: {{registration?.email}}, phone: {{registration?.phoneNumber}},
+          membership: {{utils.getYesNo(registration?.isMember)}},</ion-text>
+        <ion-text>{{registration.comments}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngFor="let student of registration?.students">
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom >Student {{student.name}}</h2>
+        </ion-text>
+        <ion-text>Age: {{student.ageRangeOptionName}}, Level: {{student.levelOptionName}}</ion-text>
+        <ion-text>{{student.comments}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

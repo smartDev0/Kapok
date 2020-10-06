@@ -1,0 +1,123 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Question Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item lines="none" margin-top>
+      <ion-thumbnail margin-end>
+        <img *ngIf="question?.iconUrl" alt="" src="{{question?.iconUrl}}">
+      </ion-thumbnail>
+      <ion-label text-wrap>
+        <h2 >{{question?.title}}</h2>
+        <p *ngIf="question?.courseName"> Program: {{question?.courseName}}</p>
+        <p>{{question?.userName}} at {{utils.formatDate(question?.createdDate)}}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" margin-top *ngIf="questionContent">
+      <ion-label text-wrap>
+        <p>{{questionContent.content}}</p>
+      </ion-label>
+    </ion-item>
+
+<!--    <ion-grid class="ion-no-padding">-->
+<!--      <ion-row>-->
+<!--        <ion-col class="ion-no-padding" size="12" sizeMd="6" sizeLg="4">-->
+<!--          <div style="text-align:center" *ngFor="let attachedFile of questionContent?.attachedFiles">-->
+<!--            <video id="videoQ" style="width: 100%; height: 200px" preload="metadata" class="video-js"-->
+<!--                   controls controlsList="nodownload noremoteplayback">-->
+<!--              <source src="{{getVideoURL(attachedFile.id)}}">-->
+<!--              &lt;!&ndash;<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">&ndash;&gt;-->
+<!--              Your browser does not support HTML5 video.-->
+<!--            </video>-->
+<!--            <ion-icon *ngIf="canDeleteVideo(questionContent)" (click)="deleteAttachedFile(attachedFile.id)" class="delete-img" name="trash"></ion-icon>-->
+<!--          </div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+<!--    </ion-grid>-->
+  </ion-list>
+
+  <ion-list-header *ngIf="answers?.length>0" color="primary">{{translateUtil.translateKey('Replies')}}</ion-list-header>
+  <ion-list *ngFor="let answer of answers;" >
+    <ion-item lines="none" margin-top>
+      <ion-thumbnail margin-end>
+        <img *ngIf="answer?.iconUrl" alt="" src="{{answer?.iconUrl}}">
+      </ion-thumbnail>
+      <ion-label text-wrap>
+        <p>{{answer?.userName}} at {{utils.formatDate(answer?.createdDate)}}</p>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label text-wrap>
+        <h2>{{answer?.content}}</h2>
+      </ion-label>
+    </ion-item>
+
+<!--    <ion-grid class="ion-no-padding">-->
+<!--      <ion-row>-->
+<!--        <ion-col class="ion-no-padding" size="12" sizeMd="6" sizeLg="4">-->
+<!--          <div style="text-align:center" *ngFor="let attachedFile of answer?.attachedFiles">-->
+<!--            <video id="video1" style="width: 100%; height: 200px" preload="metadata" class="video-js"-->
+<!--                   controls controlsList="nodownload noremoteplayback">-->
+<!--              <source src="{{getVideoURL(+attachedFile.id)}}">-->
+<!--              &lt;!&ndash;<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4">&ndash;&gt;-->
+<!--              Your browser does not support HTML5 video.-->
+<!--            </video>-->
+<!--            <ion-icon *ngIf="canDeleteVideo(answer)" (click)="deleteAttachedFile(attachedFile.id)" class="delete-img" name="trash"></ion-icon>-->
+<!--          </div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+<!--    </ion-grid>-->
+  </ion-list>
+
+  <ion-list-header color="primary">{{translateUtil.translateKey('My Reply')}}</ion-list-header>
+  <ion-item lines="none">
+    <ion-textarea class="medium" [(ngModel)]="replyContent" name="reply"
+                  #replyRef="ngModel" maxlength="1000"></ion-textarea>
+  </ion-item>
+
+<!--  <div *ngIf="canAddVideo()">-->
+<!--    <ng-container *ngIf="currentPlatform == 'browser'; else device">-->
+<!--      <ion-button class="pointer" #pickerButtonFile expand=full>-->
+<!--        <ion-icon name="videocam"></ion-icon>Choose Video-->
+<!--        <input id="file-chooser" type="file" accept="video/*" (change)="videoChosen($event)">-->
+<!--      </ion-button>-->
+<!--    </ng-container>-->
+<!--    <ng-template #device>-->
+<!--      <ion-button #pickerButtonNative (click)="nativeImagePicker()" expand=full>-->
+<!--        <ion-icon name="image"></ion-icon>Pick Video-->
+<!--      </ion-button>-->
+<!--    </ng-template>-->
+<!--&lt;!&ndash;    <ion-button (click)="videoUpload()" expand=full [disabled]="!enableUploadBtn()">&ndash;&gt;-->
+<!--&lt;!&ndash;      <ion-icon name="cloud-upload"></ion-icon>Upload&ndash;&gt;-->
+<!--&lt;!&ndash;    </ion-button>&ndash;&gt;-->
+<!--    <ion-item lines="none" *ngFor="let fileName of fileNames; let i = index">-->
+<!--      <ion-icon slot="start" color="danger" (click)="deleteFile(i)" class="delete-img pointer" name="close"></ion-icon>-->
+<!--      <ion-text>{{fileName}}</ion-text>-->
+<!--    </ion-item>-->
+<!--  </div>-->
+  <div class="scroll-content"></div>
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;"  (click)="onReply()" >
+          {{translateUtil.translateKey('Reply')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onClose()">
+          {{translateUtil.translateKey('Close')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

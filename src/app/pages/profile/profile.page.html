@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('MY_PROFILE')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('USERNAME')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.userName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('NAME')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.name}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('EMAIL')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.email}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Phone')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.phoneNumber}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item  *ngIf="userInfo?.weChatNum">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('WeChat ID')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.weChatNum}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.age">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Age')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.age}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.region">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('REGION')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.region}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.genderName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Gender')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.genderName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.favorites">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('FAVORITES')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.favorites}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Autobiography')}}</h2>
+        </ion-text>
+        <ion-text>{{userInfo?.description}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="userInfo?.iconUrl" lines="none" margin-bottom>
+      <img *ngIf="userInfo?.iconUrl" [src]="userInfo?.iconUrl">
+    </ion-item>
+
+    <ion-list-header color="secondary" class="listHeader">Update Icon</ion-list-header>
+    <ion-item *ngIf="isApp" lines="none">
+      {{translateUtil.translateKey("Choose a Icon")}}
+      <ion-button size="small" slot="end" (click)="onFromLibrary()">
+        <ion-icon name="folder-open"></ion-icon>
+      </ion-button>
+      <ion-button size="small" slot="end" (click)="onFromCamera()">
+        <ion-icon name="camera"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item *ngIf="!isApp" lines="none">
+      <ion-button size="small" slot="start" (click)="onClickIcon()">Choose</ion-button>
+      <ion-text ><p id="files_info">{{files_info}}</p></ion-text>
+      <ion-button size="small" slot="end" (click)="updateImageDisplay()">Upload</ion-button>
+    </ion-item>
+    <input id="image_uploads" type="file" name="pic" accept="image/*" hidden>
+
+
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

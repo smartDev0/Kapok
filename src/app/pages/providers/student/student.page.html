@@ -1,0 +1,118 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Registrant')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<!--Main content.-->
+<ion-content >
+  <form class="listContent" #formRef="ngForm" (ngSubmit)="onSend(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" name="name" [(ngModel)]="student.name" required
+                 #nameRef="ngModel"
+                 maxlength="200"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Name required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.maxlength && submitted" text-wrap lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('name')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <div *ngIf="student?.useBirthDay">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Birthday')}}</ion-label>
+        <ion-icon slot="end" name="time"></ion-icon>
+        <ion-datetime #birthDayRef = "ngModel"
+                      displayFormat="YY-MMM-DD"
+                      [(ngModel)]="student.birthDay"
+                      name="birthDay"
+                      min="1950-01-10"
+                      max="{{currentDateStr}}">
+        </ion-datetime>
+      </ion-item>
+    </div>
+
+    <div *ngIf="!student?.useBirthDay">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Age')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-select [(ngModel)]="student.ageRangeOptionId" name="ageGroup" #ageGroupRef="ngModel" (ngModelChange)="changedAge(student.ageRangeOptionId)" required>
+          <ion-select-option *ngFor="let ageRangeOption of ageRangeOptions" [value]="ageRangeOption?.id">{{ageRangeOption?.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="ageGroupRef.errors?.required && submitted" lines="none">
+        <ion-label color="danger">{{translateUtil.translateKey('Age Range required')}}</ion-label>
+      </ion-item>
+    </div>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Level')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select [(ngModel)]="student.levelOptionId" name="level" #levelRef="ngModel" (ngModelChange)="changedLevel(student.levelOptionId)" required>
+        <ion-select-option *ngFor="let levelOption of levelOptions" [value]="levelOption?.id">{{levelOption?.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="levelRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger">{{translateUtil.translateKey('Level required')}}</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="enableLiftTicket">
+      <ion-label position="stacked">{{translateUtil.translateKey('Need lift ticket?')}}</ion-label>
+      <ion-select [(ngModel)]="student.liftTicket" name="liftTicket" #liftTicketRef="ngModel">
+        <ion-select-option value={{true}}>Yes</ion-select-option>
+        <ion-select-option checked value={{false}}>No</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="enableRental">
+      <ion-label position="stacked">{{translateUtil.translateKey('Need ski/snowboard rental?')}}</ion-label>
+      <ion-select [(ngModel)]="student.skiRental" name="skiRental" #skiRentalRef="ngModel">
+        <ion-select-option value={{true}}>Yes</ion-select-option>
+        <ion-select-option checked value={{false}}>No</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="enableRental">
+      <ion-label position="stacked">{{translateUtil.translateKey('Need helmet? (helmet is mandatory)')}}</ion-label>
+      <ion-select [(ngModel)]="student.helment" name="helment" #skiRentalRef="ngModel">
+        <ion-select-option value={{true}}>Yes</ion-select-option>
+        <ion-select-option checked value={{false}}>No</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Comments')}}</ion-label>
+      <ion-textarea class="small" [(ngModel)]="student.comments"  name="comments"
+                    #commentsRef="ngModel"
+                    maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="commentsRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('Comments')}} {{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+<!--  &lt;!&ndash;Fav buttons &ndash;&gt;-->
+<!--  <ion-fab vertical="bottom" horizontal="end" slot="fixed">-->
+<!--    <ion-fab-button color="orange" (click)="openMenu()">-->
+<!--      {{translateUtil.translateKey("Menu")}}-->
+<!--    </ion-fab-button>-->
+<!--  </ion-fab>-->
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;"  (click)="l_save()" >
+          {{translateUtil.translateKey('Save')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onCancel()">
+          {{translateUtil.translateKey('Cancel')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

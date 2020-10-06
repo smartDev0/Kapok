@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Course Price Formula Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form color="secondary" class="listContent" *ngIf="coursePriceFormula" #formRef="ngForm" (ngSubmit)="onSave(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="coursePriceFormula.name"
+                 name="name"
+                 #nameRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('Name is required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="nameRef.errors?.maxlength">
+      <ion-label color="danger"  text-wrap>{{translateUtil.translateKey('Name')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="coursePriceFormula.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Minimum selected sessions(inclusive)')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" [(ngModel)]="coursePriceFormula.minSessionNum" name="minSessionNum" #minSessionNumRef="ngModel" min="0" max="1000" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="minSessionNumRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('minSessionNum is required')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Maximum selected sessions(inclusive)')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" [(ngModel)]="coursePriceFormula.maxSessionNum" name="maxSessionNum" #maxSessionNumRef="ngModel" min="0" max="1000" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="maxSessionNumRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('maxSessionNum is required')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Price each student')}} $<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" [(ngModel)]="coursePriceFormula.priceUnit" name="priceUnit" #priceUnitRef="ngModel" min="0" max="1000" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="priceUnitRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('Price is required')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('For member')}}</ion-label>
+      <ion-checkbox [(ngModel)]="coursePriceFormula.isMember" name="isMember"></ion-checkbox>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

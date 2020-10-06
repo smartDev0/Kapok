@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('CONFIRM_EMAIL')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent" padding-horizontal>
+    <p *ngIf="!confirmed">{{translateUtil.translateKey('CONFIRM_EMAIL_FAILED')}} {{errorMessage}}</p>
+    <p *ngIf="confirmed">{{translateUtil.translateKey('CONFIRM_EMAIL_SUCCESS')}}</p>
+  </div>
+  <ion-list>
+    <div>
+      <ion-button expand="block" (click)="onGoHome()">{{translateUtil.translateKey('HOME')}}</ion-button>
+    </div>
+  </ion-list>
+</ion-content>

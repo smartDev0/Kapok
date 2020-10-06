@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Edit Mountain')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form *ngIf="mountain" #formRef="ngForm" (ngSubmit)="saveMountain(formRef)">
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" name="name" [(ngModel)]="mountain.name" required
+                 #nameRef="ngModel"
+                 maxlength="200"></ion-input>
+      <ion-text align-self-start *ngIf="nameRef.errors?.required && submitted">{{translateUtil.translateKey('Name is requried')}}</ion-text>
+      <ion-text align-self-start *ngIf="nameRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('Name')}} {{translateUtil.translateKey('MAX_200')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="mountain.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-text align-self-start *ngIf="descriptionRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label >{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-toggle
+          name="activated"
+          [(ngModel)]="mountain.enabled"
+      ></ion-toggle>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

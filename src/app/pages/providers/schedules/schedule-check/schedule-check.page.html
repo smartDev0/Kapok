@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('InstructorTime check')}}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-item *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)">
+      <ion-label position="stacked"><ion-text color="orange">{{translateUtil.translateKey('User id')}}</ion-text></ion-label>
+      <ion-input type="number" [(ngModel)]="searchUserId" name="searchUserId" #searchUserIdCtl="ngModel"></ion-input>
+    </ion-item>
+    <ion-item >
+      <ion-label position="stacked">{{translateUtil.translateKey('On date')}}</ion-label>
+      <ion-datetime #searchOnDateRef = "ngModel"
+                    id="customPickerOptions"
+                    displayFormat="YYYY-MMM-DD"
+                    [(ngModel)]="searchOnDate"
+                    name="searchOnDate"
+                    min="2000"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button type="button" slot="start" (click)="onReset()">
+        {{translateUtil.translateKey('Reset')}}
+      </ion-button>
+      <ion-button type="button" slot="end" (click)="onSearch()">
+        {{translateUtil.translateKey('Search')}}
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-list-header color="primary" class="listHeader">
+      {{translateUtil.translateKey('Candidate Recurrence')}}
+    </ion-list-header>
+    <div *ngFor="let instance of candidateInstances">
+      <ion-item detail>
+        <ion-label padding-bottom (click)="onEditInstance(instance)">
+          <ion-text>
+            <h2 *ngIf="instance.clonedRecurrence?.title" class="fieldLabel">Recurrence: {{instance.clonedRecurrence.title}}</h2>
+            <h2 *ngIf="instance.clonedSchedule?.title" class="fieldLabel">Schedule: {{instance.clonedSchedule.title}}</h2>
+          </ion-text>
+          <ion-text text-wrap>Instance: {{instance.notes}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item-divider (click)="onToggleInstance(instance)" color="secondary" class="listHeader">
+        {{(instance.expended?"-":"+")}}{{instance.clonedRecurrence?.title}}
+      </ion-item-divider>
+      <div *ngIf="instance.expended">
+        <ion-item>
+          <ion-label >{{translateUtil.translateKey('Set blocked on selected date')}}</ion-label>
+          <ion-checkbox [(ngModel)]="instance.blocked" name="blocked"></ion-checkbox>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label position="stacked">{{translateUtil.translateKey('Notes')}}</ion-label>
+          <ion-textarea class="medium" [(ngModel)]="instance.notes"  name="notes"
+                        #notesRef="ngModel" maxlength="1000"></ion-textarea>
+          <ion-label color="danger" *ngIf="notesRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+        </ion-item>
+        <ion-button *ngIf="instance && instance.id>0" size="small" slot="start" (click)="onDeleteInstance(instance)"><ion-icon name="trash"></ion-icon></ion-button>
+        <ion-button size="small" slot="end" (click)="onSaveInstance(instance)">Save Instance</ion-button>
+      </div>
+    </div>
+  </ion-list>
+  <ion-list *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" class="listContent">
+    <ion-list-header color="orange" class="listHeader">
+      {{translateUtil.translateKey('All Recurrence')}}
+    </ion-list-header>
+    <ion-item *ngFor="let instance of recurrenceInstances" detail>
+      <ion-label padding-bottom (click)="onEditInstance(instance)">
+        <ion-text>
+          <h2 *ngIf="instance.clonedRecurrence?.title" class="fieldLabel">Recurrence: {{instance.clonedRecurrence.title}}</h2>
+          <h2 *ngIf="instance.clonedSchedule?.title" class="fieldLabel">Schedule: {{instance.clonedSchedule.title}}</h2>
+        </ion-text>
+        <ion-text text-wrap>{{instance.notes}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

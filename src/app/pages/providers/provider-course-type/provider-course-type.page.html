@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Program types')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let pCourseType of providerCourseTypes;" (click)="onViewDetails(pCourseType)" detail>
+      <ion-label>
+        <p><ion-text>{{pCourseType?.name}}</ion-text></p>
+        <p><ion-text>{{pCourseType?.description}}</ion-text></p>
+        <p><ion-text>Enabled: {{utils.getYesNo(pCourseType?.enabled)}}</ion-text></p>
+      </ion-label>
+    </ion-item>
+    <ion-button *ngIf="appSession.l_isAdministrator(providerId)" expand="block" (click)="onAddPCType()">+</ion-button>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

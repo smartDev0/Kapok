@@ -1,3 +1,25 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane>
+    <ion-menu contentId="content" side="start">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>{{userName?userName:"Menu"}}</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appSession.pages">
+            <ion-item class="pointer" color="{{p.color}}" (click)="openPage(p)" >
+              <ion-label>{{translateUtil.translateKey(p.title)}}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-item lines="none">
+            <ion-text><p class="smallText">{{translateUtil.translateKey("Version")}}: {{appConstants.appVersion}} {{(appConstants.beta?"BETA":"")}}</p></ion-text>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+
+    <ion-router-outlet id="content" main></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

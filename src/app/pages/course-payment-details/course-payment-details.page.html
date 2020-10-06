@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Payment details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Invoice id')}}</h2>
+        </ion-text>
+        <ion-text>{{coursePaymentService.invoice?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item (click)="onViewAmountDetails()" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Amount')}}</h2>
+        </ion-text>
+        <ion-text>${{coursePaymentService.invoice?.amount}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Status')}}</h2>
+        </ion-text>
+        <ion-text>{{coursePaymentService.invoice?.statusName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Invoice date')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(coursePaymentService.invoice?.invoiceDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <!--<ion-item text-wrap>-->
+    <!--<p class="fieldLabel">{{translateUtil.translateKey('Comments')}}</p>-->
+    <!--<h3>{{coursePaymentService.invoice?.comments}}</h3>-->
+    <!--</ion-item>-->
+  </ion-list>
+  <div id="dropin-container"></div>
+  <ion-button expand="block" type="button" id="payOnline-button" [disabled]="notReady" *ngIf="payOnline" >{{translateUtil.translateKey('Pay Online')}}</ion-button>
+  <ion-button expand="block" type="button" id="payOffline-button" [disabled]="initialBrainTree" *ngIf="payOffline" (click)="onPayOffline()">{{translateUtil.translateKey('Pay Offline')}}</ion-button>
+  <ion-button expand="block" type="button" id="ok-button" (click)="onClose()">{{translateUtil.translateKey('Close')}}</ion-button>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <!--Fav buttons -->
+  <!--<ion-fab vertical="bottom" horizontal="end" slot="fixed">-->
+    <!--<ion-fab-button color="orange" (click)="openMenu()">-->
+      <!--{{translateUtil.translateKey("Menu")}}-->
+    <!--</ion-fab-button>-->
+  <!--</ion-fab>-->
+</ion-content>

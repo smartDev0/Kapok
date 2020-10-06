@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('PreApprovedPayment Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="prePayment" #formRef="ngForm" (ngSubmit)="savePrePayment(formRef)">
+    <ion-list-header>id: {{prePayment.id}}, providerId: {{prePayment.providerId}}</ion-list-header>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Email')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="prePayment.email"
+                 name="email"
+                 #emailRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="emailRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Email required.')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Verification Code')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="prePayment.verifyCode"
+                 name="verifyCode"
+                 #verifyCodeRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="verifyCodeRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Code required.')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Max Amount')}} $<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="prePayment.maxAmount"
+                 name="maxAmount"
+                 #maxAmountRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="maxAmountRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Max amount required.')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-toggle name="enabled" [(ngModel)]="prePayment.enabled"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Comments')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="prePayment.comments"  name="comments"
+                    #commentsRef="ngModel" maxlength="1000"></ion-textarea>
+    </ion-item>
+
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Used Date')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(prePayment?.usedDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Created Date')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(prePayment?.createdDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('LastUpdatedDate')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(prePayment?.lastUpdatedDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('InstructorTime Booking')}}</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-list-header color="primary">{{instructor?.name}}</ion-list-header>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Check availability on')}}</ion-label>
+      <ion-icon slot="end" name="calendar"></ion-icon>
+      <ion-datetime #onDateRef = "ngModel"
+                    displayFormat="YY-MMM-DD"
+                    [(ngModel)]="onDate"
+                    (ngModelChange)="onDateChanged()"
+                    name="onDate"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <div *ngIf="showToolBar()">
+      <ion-item *ngIf="schedule?.title" color="orange">{{schedule?.title}}</ion-item>
+      <ion-item *ngIf="schedule?.providerCourseTypes && schedule?.providerCourseTypes.length>0" color="secondary">
+        <ion-label>{{translateUtil.translateKey('Program type')}}</ion-label>
+        <ion-select [(ngModel)]="selectedProgramType" name="pcType" (ngModelChange)="onPCTypeChanged()">
+          <ion-select-option *ngFor="let pcType of schedule.providerCourseTypes" [value]="pcType">{{pcType.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="schedule?.learnTypes && schedule?.learnTypes.length>0" color="secondary">
+        <ion-label>{{translateUtil.translateKey('Learn type')}}</ion-label>
+        <ion-select [(ngModel)]="selectedLearnType" name="learnType" (ngModelChange)="onLearnTypeChanged()">
+          <ion-select-option *ngFor="let learnType of schedule.learnTypes" [value]="learnType">{{learnType.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="schedule?.tripHills && schedule?.tripHills.length>0" color="secondary">
+        <ion-label>{{translateUtil.translateKey('Hill')}}</ion-label>
+        <ion-select [(ngModel)]="selectedTripHill" name="tripHill" (ngModelChange)="onTripHillChanged()">
+          <ion-select-option *ngFor="let tripHill of schedule.tripHills" [value]="tripHill">{{tripHill.locationStr}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-button [color]="checkColor(hourHill)"
+                *ngFor="let hourHill of availableHourHills"  size="full"
+                (click)="onClickTimeSlot(hourHill)" [disabled]="(hourHill.occupied && !isViewCourseForTime) || hourHill.blocked">
+      <ion-text >{{appendZero(hourHill.startHour)}}:{{appendZero(hourHill.startMinute)}} to
+        {{appendZero(hourHill.endHour)}}:{{appendZero(hourHill.endMinute)}}</ion-text>
+      <ion-text *ngIf="hourHill.occupied">(booked)</ion-text>
+      <ion-icon padding-left="1px" small *ngIf="hourHill.registerCode" name="lock"></ion-icon>
+    </ion-button>
+  </ion-list>
+
+  <div class="scroll-content"></div>
+<!--  &lt;!&ndash;Fav buttons &ndash;&gt;-->
+<!--  <ion-fab vertical="bottom" horizontal="end" slot="fixed">-->
+<!--    <ion-fab-button color="orange" (click)="openMenu()">-->
+<!--      {{translateUtil.translateKey("Menu")}}-->
+<!--    </ion-fab-button>-->
+<!--  </ion-fab>-->
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;"  (click)="onBook()" [disabled]="disableBook()">
+          {{translateUtil.translateKey('Book')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onClose()">
+          {{translateUtil.translateKey('Cancel')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

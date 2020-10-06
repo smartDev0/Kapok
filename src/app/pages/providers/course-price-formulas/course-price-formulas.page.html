@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Course Price Formulas')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-item *ngFor="let formula of coursePriceFormulas" detail>
+      <ion-label (click)="onViewDetails(formula)">
+        <ion-text>{{formula?.name}}</ion-text>
+      </ion-label>
+      <ion-button slot="start" (click)="onDelete(formula)"><ion-icon name="trash"></ion-icon></ion-button>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Change Email')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent" *ngIf="appSession.l_getUserId()">
+    <form #formRef="ngForm" (ngSubmit)="saveEmail(formRef)">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="email" [(ngModel)]="newEmail" name="email" #email="ngModel" required
+                   (ngModelChange)="resetError('emailError')" (ionBlur)="checkEmail()"
+                   pattern="^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9+_{|}-]+[.][a-z0-9+_{|}-]+$"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label *ngIf="(email.errors?.required || email.errors?.pattern || emailError) && submitted">
+          <ion-text align-self-start color="danger" *ngIf="email.errors?.required && submitted">{{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-text>
+          <ion-text align-self-start color="danger" *ngIf=" email.errors?.pattern && submitted">{{translateUtil.translateKey('WRONG_EMAIL')}}</ion-text>
+          <ion-text align-self-start color="danger" *ngIf="emailError && submitted" text-wrap>{{translateUtil.translateKey("emailError")}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('CONFIRM_EMAIL')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="email" [(ngModel)]="confirmEmail" name="confirmEmail" required #confirmEmailCtl="ngModel"
+                   (ngModelChange)="checkConfirmEmail()" ></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <ion-text align-self-start color="danger"  *ngIf="confirmEmailCtl.errors?.required && submitted">{{translateUtil.translateKey('CONFIRM')}} {{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-text>
+          <ion-text align-self-start color="danger" *ngIf="confirmEmailError && submitted" text-wrap>{{translateUtil.translateKey(confirmEmailError)}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </form>
+  </div>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

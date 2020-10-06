@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Comments</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" onfocus="true" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let item of (comments); let i = index; " class="listContent">
+    <ion-list *ngIf="!item.hide">
+      <ion-item >
+        <ion-label>
+          <h2 text-wrap style="font-weight: bold;" [innerHtml]="utils.highlightSearch(item?.title, searchKey)"></h2>
+          <p text-wrap [innerHtml]="utils.highlightSearch((item?.ownerUserName==null?'Guest':item?.ownerUserName), searchKey)"></p><p> at {{utils.formatDateLong(item?.lastUpdatedDate)}}</p>
+          <h2 text-wrap [innerHtml]="utils.highlightSearch(item?.comments, searchKey)"></h2>
+          <!--<h2 text-wrap>{{translateUtil.translateKey("Score")}}: {{item.score}}</h2>-->
+          <span *ngIf="item.commentEntityTypeId==appConstants.COMMENT_TYPE_PROVIDER || provider?.showRating" class="stars alignleft">
+              <span [ngStyle]="{ width: utils.getStars(item.score) }"></span>
+          </span>
+        </ion-label>
+        <ion-button *ngIf="isOwner(item)" slot="end" (click)="onDelete(item?.id)"><ion-icon name="trash"></ion-icon></ion-button>
+      </ion-item>
+    </ion-list>
+
+  </div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+  <!--<ion-fab *ngIf="toWaitScroll"  bottom left>-->
+    <!--<button ion-fab class="fabButton2" (click)="onScrollUp()"><ion-icon name="arrow-up"></ion-icon></button>-->
+  <!--</ion-fab>-->
+</ion-content>

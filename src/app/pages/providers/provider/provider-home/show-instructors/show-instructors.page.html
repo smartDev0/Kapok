@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Available Instructors</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Choose date')}}</ion-label>
+      <ion-icon slot="end" name="calendar"></ion-icon>
+      <ion-datetime #onDateRef = "ngModel"
+                    displayFormat="YY-MMM-DD"
+                    [(ngModel)]="onDate"
+                    (ngModelChange)="onDateChanged()"
+                    name="onDate"
+                    min="2017"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-buttons slot="end">
+      <ion-button slot="end" size="small" fill="solid" (click)="onClearOnDate()"><ion-icon name="refresh"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div *ngFor="let instructor of instructors">
+  <ion-list *ngIf="!instructor.hide && !instructor.hideByNoSchedule" class="listContent"  >
+    <ion-list-header color="secondary" class="listHeader">
+      <h4 [innerHtml]="utils.highlightSearch(instructor?.name, searchKey)"></h4>
+    </ion-list-header>
+
+    <ion-item lines="none" (click)="onInstructorDetails(instructor?.id)">
+      <ion-grid>
+        <ion-row align-items-center>
+          <ion-col>
+            <ion-thumbnail *ngIf="provider?.showInstructorPhoto">
+              <img *ngIf="instructor?.iconUrl" alt="" [src]="instructor?.iconUrl">
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-label margin-start *ngIf="instructor?.skiLevel>0"><ion-icon color="orange" src="assets/icon/ski3.svg"></ion-icon><h3 style="font-weight: bold;"><ion-text color="orange">CSIA L{{instructor?.skiLevel}}</ion-text></h3></ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label margin-end *ngIf="instructor?.boardLevel>0"><ion-icon color="tertiary" src="assets/icon/snowboard3.svg"></ion-icon><h3 style="font-weight: bold;"><ion-text color="tertiary">CASI L{{instructor?.boardLevel}}</ion-text></h3></ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-item *ngIf="instructor?.description" text-wrap lines="none" (click)="onInstructorDetails(instructor?.id)" detail>
+      <h6>{{instructor?.description}}</h6>
+    </ion-item>
+
+    <ion-item lines="none">
+      <div *ngIf="provider?.showRating" style="padding-left: 15px !important;">
+        <span class="stars alignleft" (click)="onShowComments(instructor.id)">
+            <span [ngStyle]="{ width: utils.getStars(instructor?.score) }"></span>
+        </span>
+        <span padding-start class="alignleft" (click)="onShowComments(instructor.id)">
+            <span>{{translateUtil.translateKey('reviews: ')}} {{(instructor?.reviewCount==null)?0:instructor?.reviewCount}}</span>
+        </span>
+      </div>
+      <!--<ion-button *ngIf="instructor?.youtubeLinks" size="small" type="button" slot="end" (click)="onInstructorDetails(instructor.id)"><ion-icon name="videocam"></ion-icon></ion-button>-->
+      <ion-button size="small" type="button" slot="end" (click)="onViewMySchedule(instructor.userId, instructor.id)">{{translateUtil.translateKey('Instructor Time')}}</ion-button>
+      <ion-button size="small" type="button" slot="end" (click)="onViewMyCourses(instructor.id)">{{translateUtil.translateKey('Programs')}}</ion-button>
+    </ion-item>
+  </ion-list>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

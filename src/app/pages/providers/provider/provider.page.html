@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}My School/Club</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="500" showCancelButton="always" (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let provider of providers">
+    <ion-item class="pointer" *ngIf="!provider.hide" (click)="onViewDetails(provider.id)">
+      <ion-thumbnail slot="start">
+        <img *ngIf="provider?.iconUrl" alt="" [src]="provider?.iconUrl">
+      </ion-thumbnail>
+      <h2 [innerHtml]="utils.highlightSearch(provider.name, searchKey)"></h2>
+    </ion-item>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab *ngIf="appSession.l_isSiteAdmin()" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

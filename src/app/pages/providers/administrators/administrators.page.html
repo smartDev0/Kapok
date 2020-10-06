@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Administrators')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-item *ngFor="let adminUser of adminUsers" (click)="onViewDetails($event, adminUser?.id)" style="padding-left: 5px !important;" detail>
+      <ion-label>
+        <ion-text>
+          <h1 padding-bottom class="fieldLabelHead">{{adminUser?.userName}}</h1>
+        </ion-text>
+        <ion-text>Enabled: {{utils.getYesNo(adminUser?.userName)}}</ion-text>
+        <ion-text *ngIf="adminUser?.startDate">{{translateUtil.translateKey("Start time")}}: {{utils.formatDate(adminUser?.startDate)}}</ion-text>
+        <ion-text *ngIf="adminUser?.expireDate">{{translateUtil.translateKey("Expire time")}}: {{utils.formatDate(adminUser?.expireDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

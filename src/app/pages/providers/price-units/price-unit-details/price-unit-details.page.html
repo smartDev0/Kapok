@@ -1,0 +1,206 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('PriceUnit Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <ion-list class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('ID')}}: {{(priceUnit)?.id}}
+      </ion-list-header>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Title')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.title}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('ProviderMemberTypeName')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.providerMemberTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('TripHill')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.tripHillName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Provider Class type')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.providerCourseTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Learn type')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.learnTypeName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Price')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.coursePrice}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Min number student')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.minStudentCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Max number student')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.maxStudentCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Effective from')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((priceUnit)?.effectiveTime)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Expired on')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((priceUnit)?.expireTime)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Discount Amount')}}</h2>
+          </ion-text>
+          <ion-text>${{(priceUnit)?.discountAmount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Discount Percentage')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.discountPercentage}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Lift Ticket Price')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.liftPrice}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Ski Rental Price')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.skiBoardRentalPrice}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Helmet Rental Price')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.helmentRentalPrice}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Late Fee Amount')}}</h2>
+          </ion-text>
+          <ion-text>${{(priceUnit)?.latePriceAmount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Late Fee Percentage')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.latePricePercentage}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Enabled')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((priceUnit)?.enabled)}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="(priceUnit)?.description">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('DESCRIPTION')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.description}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="(priceUnit)?.comments">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Comments')}}</h2>
+          </ion-text>
+          <ion-text>{{(priceUnit)?.comments}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Created On')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((priceUnit)?.createdDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Updated On')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((priceUnit)?.lastUpdatedDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Administrator edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="adminUser" #formRef="ngForm" (ngSubmit)="saveAdministratorUser(formRef)">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('User Name')}}</h2>
+        </ion-text>
+        <ion-text>{{(adminUser)?.userName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button type="button" size="small" slot="start" (click)="onSearchUser()">
+        {{translateUtil.translateKey('Search admin user')}}
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('START_TIME')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #memberStartTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="startTime"
+                    name="memberStartTime"
+                    min="2017"
+                    max="2038-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Expire Date')}}</ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime #memberExpireTimeRef = "ngModel"
+                    displayFormat="YY-MMM-DD HH:mm"
+                    [(ngModel)]="expireTime"
+                    name="memberExpireTime"
+                    min="2017"
+                    max="2038-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Notes')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="adminUser.notes"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="descriptionRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{translateUtil.translateKey('Activated')}}</ion-label>
+      <ion-toggle
+          name="activated"
+          [(ngModel)]="adminUser.activated"
+      ></ion-toggle>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

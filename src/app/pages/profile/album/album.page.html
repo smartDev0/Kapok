@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Album')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-slides [options]="sliderConfig">
+    <ion-slide *ngFor="let albumImage of albumImages">
+      <ion-card>
+        <ion-item lines="none" >
+          {{albumImage.caption}}
+        </ion-item>
+        <img [ngClass]="{'transparented' : !albumImage.isShown}" src="{{appConstants.BASE_URL}}imageContentById/{{albumImage.imageId}}"/>
+
+        <ion-grid *ngIf="isOwner()">
+          <ion-row>
+            <ion-col>
+              <ion-button size="small" color="primary" (click)="onChangeCaption(albumImage)">{{translateUtil.translateKey("Caption")}}</ion-button>
+              <ion-button size="small" color="primary" *ngIf="!albumImage.isShown" (click)="onShowImage(albumImage)">{{translateUtil.translateKey("Show")}}</ion-button>
+              <ion-button size="small" color="primary" *ngIf="albumImage.isShown" (click)="onHideImage(albumImage)">{{translateUtil.translateKey("Hide")}}</ion-button>
+              <ion-button size="small" color="primary" (click)="onDeleteAlbumImage(albumImage.id)">{{translateUtil.translateKey("Delete")}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

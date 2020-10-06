@@ -1,0 +1,147 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Invoice Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<!--Main content.-->
+<ion-content >
+  <ion-list>
+
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Invoice Id')}}</h2>
+        </ion-text>
+        <ion-text>{{invCal?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Total')}}</h2>
+        </ion-text>
+        <ion-text>{{invCal?.total}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <div *ngIf="false">
+      <ion-item>
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Tax Rate')}}</h2>
+          </ion-text>
+          <ion-text>{{invCal?.taxRate}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Tax')}}</h2>
+          </ion-text>
+          <ion-text>{{invCal?.tax}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <ion-list-header class="listHeader" color="primary">{{translateUtil.translateKey("Detail items")}}</ion-list-header>
+    <ion-item *ngFor="let invEntry of invCal?.entries">
+      <ion-label text-wrap>
+        <ion-text text-wrap>
+          <h2 padding-bottom class="fieldLabelHead">{{invEntry.name}}</h2>
+        </ion-text>
+        <ion-text>Price: ${{invEntry.unitPrice}}</ion-text>
+
+        <div *ngIf="invEntry.sessionCount">
+          <ion-text text-wrap>
+            <h2 padding-bottom class="fieldLabelHead">Sessions Count</h2>
+          </ion-text>
+          <ion-text>{{invEntry.sessionCount}}</ion-text>
+        </div>
+
+        <ion-text *ngIf="invEntry.discountAmount" >
+          <h2 padding-bottom class="fieldLabelHead">{{invEntry.discountAmountDescription}}</h2>
+        </ion-text>
+        <ion-text *ngIf="invEntry.discountAmount" >{{translateUtil.translateKey("Discount")}}: -${{invEntry.discountAmount}}</ion-text>
+
+        <ion-text *ngIf="invEntry.discountPercentage">
+          <h2 padding-bottom class="fieldLabelHead">{{invEntry.discountPercentageDescription}}</h2>
+        </ion-text>
+        <ion-text *ngIf="invEntry.discountPercentage">{{translateUtil.translateKey("Discount")}}: -{{invEntry.discountPercentage}}</ion-text>
+
+        <ion-text text-wrap>
+          <h2 padding-bottom class="fieldLabelHead">{{translateUtil.translateKey("Student Number")}}</h2>
+        </ion-text>
+        <ion-text>{{invEntry.num}}</ion-text>
+
+        <div *ngIf="invEntry.description">
+          <ion-text text-wrap>
+            <h2 padding-bottom class="fieldLabelHead">{{translateUtil.translateKey("Description")}}</h2>
+          </ion-text>
+          <ion-text>{{invEntry.description}}</ion-text>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="hasDiscount()">
+    <ion-list-header>{{translateUtil.translateKey("Discounts")}}</ion-list-header>
+    <ion-item *ngIf="invCal?.discountMemberAmount" >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{invCal?.discountMemberAmountDescription}}</h2>
+        </ion-text>
+        <ion-text>{{invCal?.discountMemberAmount}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="invCal?.discountMemberPercentage" >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{invCal?.discountMemberPercentageDescription}}</h2>
+        </ion-text>
+        <ion-text>{{invCal?.discountMemberPercentage}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <div *ngIf="false">
+      <ion-item *ngIf="invCal?.discountAmountBeforeTax" >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{invCal?.discountAmountBeforeTaxDescription}}</h2>
+          </ion-text>
+          <ion-text>{{invCal?.discountAmountBeforeTax}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="invCal?.discountPercentageBeforeTax">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{invCal?.discountPercentageBeforeTaxDescription}}</h2>
+          </ion-text>
+          <ion-text>{{invCal?.discountPercentageBeforeTax}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="invCal?.discountAmountAfterTax">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{invCal?.discountAmountAfterTaxDescription}}</h2>
+          </ion-text>
+          <ion-text>{{invCal?.discountAmountAfterTax}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </div>
+
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="onClose()">
+      {{translateUtil.translateKey("Close")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+

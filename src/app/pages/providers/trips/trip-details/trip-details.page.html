@@ -1,0 +1,143 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Trip Detail')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <ion-list *ngIf="trip" class="listContent">
+      <!--<ion-list-header color="secondary" class="listHeader">-->
+        <!--{{translateUtil.translateKey('ID')}}: {{(trip)?.id}}-->
+      <!--</ion-list-header>-->
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Trip Name')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.title}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="trip?.time">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Trip Date')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDateOnlyWithWeek((trip)?.time)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="trip?.tripHillName">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Organized Trip Destination')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.tripHillName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="trip?.location">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Location')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.location}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="trip?.deadLine">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Registration Deadline')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDateWithWeek(trip.deadLine)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="showAdminFunction()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Minimum Registration')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.minCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="showAdminFunction()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Registration Limit')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.maxCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item  text-wrap *ngIf="trip?.description">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Description')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.description}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(trip)?.conditionStr">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Prerequisites')}}</h2>
+          </ion-text>
+          <ion-text>{{(trip)?.conditionStr}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="showAdminFunction()">
+        <ion-label>
+          <ion-text color="orange">
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Enabled')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo(trip?.enabled)}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!--Summary-->
+    <ion-list class="listContent" *ngIf="showAdminFunction()">
+      <ion-list-header color="orange" class="listHeader">
+        {{translateUtil.translateKey('Summary')}}
+      </ion-list-header>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Member tickets count:')}}</h2>
+          </ion-text>
+          <ion-text>{{trip?.ticketsMemberCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Non-member tickets count:')}}</h2>
+          </ion-text>
+          <ion-text>{{trip?.ticketsNonMemberCount}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!--My Registrations-->
+    <ion-list *ngIf="trip?.myTripRegistrations && (appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)) " class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('My Registrations')}}
+      </ion-list-header>
+      <ion-item *ngFor="let registration of trip?.myTripRegistrations" (click)="onViewRegistrationDetails($event, registration)" style="padding-left: 5px !important;" detail>
+        {{registration.firstName}} {{registration.lastName}}
+      </ion-item>
+    </ion-list>
+
+    <ion-item lines="none">
+      <ion-button color="primary" size="default" slot="end" (click)="onRegister()">{{translateUtil.translateKey('Register')}}</ion-button>
+    </ion-item>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

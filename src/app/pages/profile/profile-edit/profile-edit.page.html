@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('PROFILE_EDIT')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent" *ngIf="userInfo">
+    <form #formRef="ngForm" (ngSubmit)="saveProfile(formRef)">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('UserName')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="userInfo.userName"
+                   name="userName"
+                   #userNameRef="ngModel"
+                   required>
+        </ion-input>
+        <ion-text align-self-start color="danger" *ngIf="userNameRef.errors?.required && submitted">{{translateUtil.translateKey('NAME_REQUIRED')}}</ion-text>
+        <ion-text align-self-start color="danger" *ngIf="userNameExistError && submitted">{{userNameExistError}}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('NAME')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="userInfo.name"
+                   name="name"
+                   #nameRef="ngModel"
+                   required>
+        </ion-input>
+        <ion-text align-self-start color="danger" *ngIf="nameRef.errors?.required && submitted">{{translateUtil.translateKey('NAME_REQUIRED')}}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-label position="stacked">This email address will be used for login!</ion-label>
+        <ion-input type="email"
+                   [(ngModel)]="userInfo.email"
+                   name="email"
+                   #emailRef="ngModel"
+                   [disabled]="true"
+                   required>
+        </ion-input>
+        <ion-text align-self-start color="danger" *ngIf="emailRef.errors?.required && submitted">{{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Phone')}} (111-1111111) <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="text" [(ngModel)]="userInfo.phoneNumber" #phoneNumberRef="ngModel" name="phoneNumber" required></ion-input>
+        <ion-text align-self-start color="danger" *ngIf="phoneNumberRef.errors?.required && submitted">{{translateUtil.translateKey('Phone number required')}}</ion-text>
+        <ion-text align-self-start color="danger" *ngIf="phoneError && submitted">{{phoneError}}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('WeChat ID')}}</ion-label>
+        <ion-input [(ngModel)]="userInfo.weChatNum"  name="weChatNum"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Age')}}</ion-label>
+        <ion-input type="number" [(ngModel)]="userInfo.age"  name="age"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('REGION')}}</ion-label>
+        <ion-input [(ngModel)]="userInfo.region" type="text" name="region"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label >{{translateUtil.translateKey('GENDER')}}</ion-label>
+        <ion-select [(ngModel)]="userInfo.genderId" name="genderId">
+          <ion-select-option *ngFor="let gender of genders" [value]="gender.id">{{translateUtil.translateKey(gender.name)}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Autobiography')}}</ion-label>
+        <ion-textarea rows="4" maxLength="1000" [(ngModel)]="userInfo.description"  name="description"></ion-textarea>
+      </ion-item>
+    </form>
+  </div>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

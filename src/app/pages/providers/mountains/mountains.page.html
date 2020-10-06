@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Managing Ski Resorts')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="mountains" class="listContent">
+    <ion-item *ngFor="let mountain of mountains" (click)="onViewDetails(mountain.id)">
+      <ion-thumbnail>
+        <img *ngIf="mountain?.iconUrl" alt="" [src]="mountain?.iconUrl">
+      </ion-thumbnail>
+      <ion-label padding-start>
+        <h2>{{translateUtil.translateKey(mountain.name)}}</h2>
+        <p>{{translateUtil.translateKey("Clubs/Schools")}}: {{mountain.schoolCounts==null?'':mountain.schoolCounts.length}}</p>
+        <p>{{mountain.description}}</p>
+        <p>{{translateUtil.translateKey(mountain.enabled?"Enabled":"Disabled")}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

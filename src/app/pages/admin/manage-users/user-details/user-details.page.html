@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('User Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="userInfo">
+    <ion-item *ngIf="userInfo?.iconUrl">
+      <ion-avatar item-start>
+        <img alt="" src="{{userInfo.iconUrl}}">
+      </ion-avatar>
+      <h1 text-center >
+        {{userInfo.userName}}
+      </h1>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.name">
+      <p text-center >
+        {{userInfo.name}}
+      </p>
+    </ion-item>
+    <ion-item *ngIf="userInfo?.email">
+      <p text-center >
+        {{userInfo.email}}
+      </p>
+    </ion-item>
+    <ion-item *ngIf="userInfo">
+      <ion-label>{{userInfo.locked?"Locked":"Not locked"}}</ion-label>
+      <ion-button size="small" color="primary" *ngIf="!userInfo?.locked" (click)="onLockUser()">{{translateUtil.translateKey("Lock")}}</ion-button>
+      <ion-button size="small" color="primary" *ngIf="userInfo?.locked" (click)="onUnLockUser()">{{translateUtil.translateKey("Unlock")}}</ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label>Is site admin</ion-label>
+      <ion-toggle *ngIf="appSession.l_isSiteAdmin()" [(ngModel)]="isSiteAdmin" (ionChange)="onAdminChange()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+  <ion-button expand="block" color="primary" (click)="onLogoutUser()">{{translateUtil.translateKey("Logout User")}}</ion-button>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="onClose()">
+      {{translateUtil.translateKey("Close")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

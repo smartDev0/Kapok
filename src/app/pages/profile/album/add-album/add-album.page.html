@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Album')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="images.length > 0">
+    <ion-row #imgRow>
+      <ion-col *ngFor="let img of images; let i = index" size="4">
+        <img class="selected-img" [src]="img" alt="">
+        <ion-icon (click)="deleteImg(i)" class="delete-img pointer" name="trash"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div padding *ngIf="currentPlatform == 'browser'">
+    <ion-text color="medium">
+      Allowed only {{allowedNumberOfImages}} images to be selected at a time.
+    </ion-text>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ng-container *ngIf="currentPlatform == 'browser'; else device">
+    <ion-button class="pointer" #pickerButton expand=full>
+      <ion-icon name="image"></ion-icon> &nbsp; Choose Image
+      <input id="file-chooser" type="file" accept="image/*" multiple (change)="browserImagePicker($event)">
+    </ion-button>
+  </ng-container>
+  <ng-template #device>
+    <ion-button #pickerButton (click)="nativeImagePicker()" expand=full>
+      <ion-icon name="image"></ion-icon> &nbsp; Choose Image
+    </ion-button>
+  </ng-template>
+  <ion-button [color]="images.length > 0 ? 'secondary' : 'medium'" (click)="imageUpload()" expand=full>
+    <ion-icon name="cloud-upload"></ion-icon> &nbsp; Upload
+  </ion-button>
+</ion-footer>

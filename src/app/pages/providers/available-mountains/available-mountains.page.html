@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Ski Resorts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+      <!--<ion-button slot="start" (click)="onClearSearch()">-->
+        <!--<ion-icon name="close"></ion-icon>-->
+      <!--</ion-button>-->
+      <ion-button slot="end" *ngIf="appSession.l_isSiteAdmin()" (click)="manageMountains()">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" placeholder="Search mountain" debounce="500" showCancelButton="always"
+                   (ionCancel)="onClearSearch()"></ion-searchbar>
+    <ion-searchbar *ngIf="appSession.clientConfigure?.enableTag" #searchTag class="searchBar" [(ngModel)]="searchTagKey" placeholder="Tags" (ionChange)="getTagItems($event)" debounce="500" showCancelButton="always"
+                   (ionCancel)="onClearTagSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<!--  banner-->
+  <div *ngIf="appSession.clientConfigure?.showBanner" [innerHtml]="banner"></div>
+
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col class="ion-no-padding" size="12" sizeMd="6" sizeLg="4" *ngFor="let mountain of mountains">
+        <ion-card *ngIf="!mountain.hide && hasContent(mountain)" class="app-card">
+
+          <ion-card-header>
+            <ion-card-title color="medium" [innerHtml]="utils.highlightSearch(mountain?.name, searchKey)"></ion-card-title>
+          </ion-card-header>
+
+          <ion-img *ngIf="mountain?.iconUrl" alt="" [src]="mountain?.iconUrl" (click)="onClickMountain(mountain)"></ion-img>
+
+          <div *ngFor="let schoolCounts of mountain?.schoolCounts; let i = index; let lst = last; let fst = first;">
+            <ion-card-header style="padding-bottom: 0px;" class="pointer">
+              <ion-card-subtitle>
+                <ion-text color="success2" (click)="onViewSchoolDetails(schoolCounts.id, mountain.id, schoolCounts.tripHillId)">
+                  <span class="subtitle" [innerHtml]="utils.highlightSearch(schoolCounts.schoolName, searchKey)"></span>
+                </ion-text>
+              </ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content style="padding-top: 0px; padding-bottom: 0px;" (click)="onViewSchoolDetails(schoolCounts.id, mountain.id, schoolCounts.tripHillId)" class="pointer">
+              <div class="inline-block margin-end" >
+                <ion-icon color="lightOrange" name="navigate" class="icon-set"></ion-icon>
+                Upcoming Trips: {{(schoolCounts.tripCount>0)?(schoolCounts.tripCount):0}}
+              </div>
+            </ion-card-content>
+
+            <ion-card-content style="padding-top: 5px; " (click)="onShowComments(schoolCounts.id)" class="pointer">
+              <ion-grid no-padding>
+                <ion-row align-items-center>
+                  <ion-col size="5">
+                    <span class="stars">
+                      <span style="text-align: center" [ngStyle]="{ width: utils.getStars(schoolCounts?.score) }"></span>
+                    </span>
+                  </ion-col>
+                  <ion-col>
+                    <ion-icon color="success2" name="text" class="icon-set"></ion-icon>
+                    {{(schoolCounts?.reviewCount==null)?"0":schoolCounts?.reviewCount}}
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ion-item *ngIf="appSession.clientConfigure?.enableTag && schoolCounts?.tags" class="pointer" lines="none">
+                <ion-label text-wrap>
+                  <p text-wrap>
+                    <ion-chip *ngFor="let tag of utils.getTagListFromString(schoolCounts.tags)" color="primary" outline>
+                      <ion-label color="orange">{{tag.trim()}}</ion-label>
+                    </ion-chip>
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-card-content>
+            <div *ngIf="mountain?.schoolCounts.length>1 && i<mountain?.schoolCounts.length-1" class="bottom-line">
+            </div>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="scroll-content"></div>
+</ion-content>
+

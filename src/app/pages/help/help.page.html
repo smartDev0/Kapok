@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('HELPS')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-list-header>Version: {{appConstants.appVersion}}</ion-list-header>
+    <ion-item text-wrap>
+      <div #helpContent></div>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button no-padding expand="block" (click)="onTerms()">{{translateUtil.translateKey('TERMS')}}</ion-button>
+  </ion-toolbar>
+</ion-footer>

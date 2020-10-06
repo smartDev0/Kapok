@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Payment details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Invoice id')}}</h2>
+        </ion-text>
+        <ion-text>{{invoice?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Amount')}}</h2>
+        </ion-text>
+        <ion-text>${{invoice?.amount}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Status')}}</h2>
+        </ion-text>
+        <ion-text>{{invoice?.statusName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Invoice date')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate(invoice?.invoiceDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item text-wrap>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Comments')}}</h2>
+        </ion-text>
+        <ion-text>{{invoice?.comments}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div id="dropin-container"></div>
+  <ion-button expand="block" type="button" id="submit-button" [disabled]="notReady">{{translateUtil.translateKey("Pay")}}</ion-button>
+  <div class="scroll-content"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Administrator Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <ion-list class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('ID')}}: {{(adminUser)?.id}}
+      </ion-list-header>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('User Name')}}</h2>
+          </ion-text>
+          <ion-text>{{(adminUser)?.userName}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Start Date')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((adminUser)?.startDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Expire Date')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((adminUser)?.expireDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Expire Date')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.formatDate((adminUser)?.expireDate)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Activated')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((adminUser)?.activated)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="(adminUser)?.notes">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Notes')}}</h2>
+          </ion-text>
+          <ion-text>{{(adminUser)?.notes}}</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

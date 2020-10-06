@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Available Lessons')}}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="isGroupPcType">
+    <ion-button size="small" (click)="openPicker(2, 100, multiColumnOptions)">Programs Filter</ion-button>
+    <div class="smallText" style="padding-left: 10px;" *ngIf="selectedTypeName || selectedPartOfDay">
+      <ion-text *ngIf="selectedTypeName" color="medium">{{selectedTypeName}}</ion-text>
+      <ion-text *ngIf="selectedTypeName && selectedPartOfDay" color="dark" style="font-weight: bold"> / </ion-text>
+      <ion-text *ngIf="selectedPartOfDay" color="medium">{{selectedPartOfDay}}</ion-text>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <div *ngIf="isGroupPcType && tripCourses && tripCourses.length>0">
+      <ion-list-header color="secondary" class="listHeader">
+        {{providerCourseType.name}}
+      </ion-list-header>
+      <ion-list *ngFor="let course of tripCourses; let i = index" style="margin-bottom: 5px;">
+        <div *ngIf="!course.hidePickList">
+          <ion-item class="listContent" lines="none">
+            <ion-label text-wrap>
+              <ion-badge *ngIf="course.featured" color="orange">Featured</ion-badge>
+              <ion-text>
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Program Name')}}</h2>
+              </ion-text>
+              <ion-text>{{course.name}}</ion-text>
+
+              <ion-text *ngIf="provider?.showCourseTime && (course)?.courseTime">
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Program Time')}}</h2>
+              </ion-text>
+              <ion-text *ngIf="provider?.showCourseTime && (course)?.courseTime">{{utils.formatDate((course)?.courseTime)}}</ion-text>
+
+              <ion-text *ngIf="provider?.showCourseTime && (course)?.tripHillName">
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Location')}}</h2>
+              </ion-text>
+              <ion-text *ngIf="provider?.showCourseTime && (course)?.tripHillName">{{utils.formatDate((course)?.tripHillName)}}</ion-text>
+
+              <div *ngIf="course?.instructorName">
+                <ion-text>
+                  <h2 class="fieldLabel">{{translateUtil.translateKey('Instructor')}}</h2>
+                </ion-text>
+                <ion-text>{{(course)?.instructorName}}</ion-text>
+              </div>
+
+              <ion-text>
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Program Type')}}</h2>
+              </ion-text>
+              <ion-text>{{(course)?.providerCourseTypeName}}</ion-text>
+
+              <ion-text>
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Learn Type')}}</h2>
+              </ion-text>
+              <ion-text>{{(course)?.learnTypeName}}</ion-text>
+
+              <ion-text *ngIf="(course)?.sessionTimesStr">
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Sessions')}}</h2>
+              </ion-text>
+              <ion-text *ngIf="(course)?.sessionTimesStr" color="dark" ><p [innerHtml]="(course)?.sessionTimesStr"></p></ion-text>
+
+              <ion-text *ngIf="(course)?.conditionStr">
+                <h2 class="fieldLabel">{{translateUtil.translateKey('Prerequisites')}}</h2>
+              </ion-text>
+              <ion-text *ngIf="(course)?.conditionStr" >{{(course)?.conditionStr}}</ion-text>
+
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-button size="small" (click)="onBookCourse(course)" >{{translateUtil.translateKey('Book')}}</ion-button>
+          </ion-item>
+        </div>
+      </ion-list>
+    </div>
+
+    <div *ngIf="!isGroupPcType && candidateInstances && candidateInstances.length>0">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('Private instructor lessons')}}
+      </ion-list-header>
+      <ion-list *ngFor="let recurrenceInstance of candidateInstances; let i = index" style="margin-bottom: 5px;">
+        <div>
+          <ion-item  class="listContent" lines="none">
+            <ion-label text-wrap>
+              <p><ion-text color="dark">{{recurrenceInstance.clonedSchedule.ownerName}}</ion-text></p>
+              <p *ngIf="recurrenceInstance.clonedSchedule?.instructor?.skiLevel>0"><ion-text color="dark" >CSIA (ski) level: {{recurrenceInstance.clonedSchedule?.instructor?.skiLevel}}</ion-text></p>
+              <p *ngIf="recurrenceInstance.clonedSchedule?.instructor?.boardLevel>0"><ion-text color="dark">CASI (snow board) level: {{recurrenceInstance.clonedSchedule?.instructor?.boardLevel}}</ion-text></p>
+              <p *ngFor="let timeSlot of (recurrenceInstance.clonedRecurrence)?.timeSlots"><ion-text color="dark">{{utils.formatTimeOfDate(timeSlot.startTime)}} to {{utils.formatTimeOfDate(timeSlot.endTime)}}</ion-text></p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item >
+            <ion-button size="small" (click)="onBookSchedule(recurrenceInstance)">
+              {{translateUtil.translateKey('Book')}}
+            </ion-button>
+          </ion-item>
+        </div>
+      </ion-list>
+    </div>
+  </div>
+  <div class="scroll-content"></div>
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onClose()">
+          {{translateUtil.translateKey('Close')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

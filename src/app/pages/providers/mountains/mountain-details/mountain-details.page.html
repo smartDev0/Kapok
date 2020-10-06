@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Mountain Details')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="listContent">
+    <ion-list class="listContent">
+      <ion-list-header color="secondary" class="listHeader">
+        {{translateUtil.translateKey('ID')}}: {{(mountain)?.id}}
+      </ion-list-header>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Name')}}</h2>
+          </ion-text>
+          <ion-text>{{(mountain)?.name}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item >
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Enabled')}}</h2>
+          </ion-text>
+          <ion-text>{{utils.getYesNo((mountain)?.enabled)}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <ion-text>
+            <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('DESCRIPTION')}}</h2>
+          </ion-text>
+          <ion-text>{{(mountain)?.description}}</ion-text>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <img *ngIf="mountain?.iconUrl" [src]="mountain?.iconUrl">
+      </ion-item>
+      <!--<ion-item *ngIf="!isApp">-->
+        <!--<p class="fieldLabel">{{translateUtil.translateKey('Title Image')}}</p>-->
+        <!--<image-upload-->
+            <!--[max]="1"-->
+            <!--[extensions]="['jpg','jpeg','png']"-->
+            <!--[maxFileSize]="5048576"-->
+            <!--[beforeUpload]="onBeforeUpload"-->
+        <!--&gt;</image-upload>-->
+      <!--</ion-item>-->
+    </ion-list>
+  </div>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

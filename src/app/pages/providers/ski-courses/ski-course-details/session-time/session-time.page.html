@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Session Time')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <form class="listContent" class="listContent" *ngIf="sessionTime" #formRef="ngForm" (ngSubmit)="onSaveSessionTime()">
+    <ion-item *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isSiteAdmin()">
+      <ion-label><ion-text color="orange">{{translateUtil.translateKey('ID: ')}} {{sessionTime.id}}</ion-text></ion-label>
+    </ion-item>
+    <ion-item *ngIf="sessionTime?.name">
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="sessionTime.name"
+                 name="name"
+                 #nameRef="ngModel"
+                 maxlength="200"
+                 [disabled]="!canEdit"
+                 required
+                 >
+      </ion-input>
+      <ion-text align-self-start color="danger" *ngIf="nameRef.errors?.required && submitted">{{translateUtil.translateKey('Name required')}}</ion-text>
+    </ion-item>
+    <ion-item *ngIf="this.canEdit">
+      <ion-button *ngIf="sessionTime?.courseId" (click)="onViewCourse(sessionTime.courseId)">
+        {{translateUtil.translateKey('View Course')}}
+      </ion-button>
+      <ion-button *ngIf="sessionTime?.courseRegistrationId" (click)="onViewCourseRegistration(sessionTime.courseRegistrationId)">
+        {{translateUtil.translateKey('View Registration')}}
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Date')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-icon slot="end" name="calendar"></ion-icon>
+      <ion-datetime
+          id="targetDateId"
+          #targetDateRef = "ngModel"
+          displayFormat="MMM DD YYYY"
+          [(ngModel)]="targetDate"
+          name="targetDateRef"
+          yearValues={{utils.getTwoYears()}}
+          max="2029-01-10"
+          [disabled]="!canEdit"
+          required
+          >
+      </ion-datetime>
+      <ion-text align-self-start color="danger" *ngIf="targetDateRef.errors?.required && submitted">{{translateUtil.translateKey('Target date required')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Start time')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime
+          id="startTimeId"
+          #startTimeRef = "ngModel"
+          displayFormat="HH mm" pickerFormat="HH mm"
+          [(ngModel)]="startTime"
+          name="startTimeRef"
+          hourValues="7,8,9,10,11,12,13,14,15,16,17"
+          minuteValues="5,10,15,20,25,30,35,40,45,50,55"
+          [disabled]="!canEdit"
+          required
+          >
+      </ion-datetime>
+      <ion-text align-self-start color="danger" *ngIf="startTimeRef.errors?.required && submitted">{{translateUtil.translateKey('Start time required')}}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('End time')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-icon slot="end" name="time"></ion-icon>
+      <ion-datetime
+          id="endTimeId"
+          #endTimeRef = "ngModel"
+          displayFormat="HH mm" pickerFormat="HH mm"
+          [(ngModel)]="endTime"
+          name="endTimeRef"
+          hourValues="7,8,9,10,11,12,13,14,15,16,17"
+          minuteValues="5,10,15,20,25,30,35,40,45,50,55"
+          [disabled]="!canEdit"
+          required
+          >
+      </ion-datetime>
+      <ion-text align-self-start color="danger" *ngIf="endTimeRef.errors?.required && submitted">{{translateUtil.translateKey('End time required')}}</ion-text>
+      <ion-text align-self-start color="danger" *ngIf="endTimeError && submitted">{{endTimeError}}</ion-text>
+    </ion-item>
+
+    <ion-item *ngIf="sessionTime?.instructor">
+      <ion-label position="stacked">{{translateUtil.translateKey('Instructor (save session time then choose instructor)')}}</ion-label>
+      <ion-text><p>{{sessionTime.instructor?sessionTime.instructor.name:""}}</p></ion-text>
+<!--      <ion-text align-self-start color="danger" *ngIf="!sessionTime.instructorId && submitted">{{translateUtil.translateKey('Instructor required')}}</ion-text>-->
+    </ion-item>
+    <ion-item *ngIf="canEdit">
+      <ion-button *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isSiteAdmin()" (click)="onChooseInstructor()">
+        {{translateUtil.translateKey('Choose Instructor')}}
+      </ion-button>
+      <ion-button *ngIf="appSession.l_isAdministrator(providerId) || appSession.l_isSiteAdmin()" (click)="onDeleteInstructor()" [disabled]="!(sessionTime)?.instructorId">
+        {{translateUtil.translateKey('Remove Instructor')}}
+      </ion-button>
+    </ion-item>
+
+    <ion-item *ngIf="sessionTime?.description">
+      <ion-label position="stacked">{{translateUtil.translateKey('DESCRIPTION')}}</ion-label>
+      <ion-textarea class="medium" [(ngModel)]="sessionTime.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000" [disabled]="!canEdit"></ion-textarea>
+      <ion-text align-self-start color="danger" *ngIf="descriptionError" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-text>
+    </ion-item>
+    <ion-item *ngIf="sessionTime?.tripHillId">
+      <ion-label position="stacked">{{translateUtil.translateKey('Organized Trip Destination')}}</ion-label>
+      <ion-select #tripHillIdRef="ngModel" [(ngModel)]="sessionTime.tripHillId" name="tripHill" (ngModelChange)="tripHillChanged()" [disabled]="!canEdit">
+        <ion-select-option *ngFor="let tripHill of tripHills" [value]="tripHill.id">{{tripHill.locationStr}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{translateUtil.translateKey('Session Mandatory?')}}</ion-label>
+      <ion-toggle name="mandatory" [(ngModel)]="sessionTime.mandatory" [disabled]="!canEdit"></ion-toggle>
+    </ion-item>
+
+    <!-- extra instructors-->
+    <ion-list *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" class="listContent">
+      <ion-list-header color="secondary" class="listHeader" (click)="onToggleExtraInstructors()">
+        {{(expendedInstructors?"-":"+")}}{{translateUtil.translateKey('Extra instructors')}}
+      </ion-list-header>
+      <div *ngIf="expendedInstructors">
+        <ion-item-divider text-wrap><ion-text color="orange">Only to add extra instructors for camp sessions</ion-text></ion-item-divider>
+        <ion-item *ngFor="let instructor of sessionTime?.instructors">
+          <ion-label padding-bottom>
+            <ion-text>
+              <h2 *ngIf="instructor.name" class="fieldLabel">{{instructor.name}}</h2>
+              <h2 *ngIf="instructor.skiLevel" class="fieldLabel">CSIA: {{instructor.skiLevel}}</h2>
+              <h2 *ngIf="instructor.boardLevel" class="fieldLabel">CASI: {{instructor.boardLevel}}</h2>
+            </ion-text>
+          </ion-label>
+          <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" slot="start" (click)="onDeleteExtraInstructor(instructor)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+      </div>
+      <ion-button *ngIf="appSession.l_isSiteAdmin() || appSession.l_isAdministrator(providerId)" size="small" expand="block" (click)="onAddExtraInstructor()">+</ion-button>
+    </ion-list>
+  </form>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

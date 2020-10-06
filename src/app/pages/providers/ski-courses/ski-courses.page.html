@@ -1,0 +1,179 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Programs/Lessons')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" placeholder="Search program" (ionChange)="getItems($event)" debounce="1000" showCancelButton="always"
+                   (ionCancel)="onClearSearch()"></ion-searchbar>
+    <ion-searchbar *ngIf="provider?.showCourseTag" #searchTag class="searchBar" [(ngModel)]="searchTagKey" placeholder="Tags" (ionChange)="getTagItems($event)" debounce="1000" showCancelButton="always"
+                   (ionCancel)="onClearTagSearch()"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-button size="small" (click)="toggleAdvancedFilter()">{{showAdvancedFilters?"-":"+"}}Filter</ion-button>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showAdvancedFilters">
+    <ion-item *ngIf="providerCourseTypes && provider?.showPrivateCourses">
+      <ion-label position="stacked">{{translateUtil.translateKey('Program type')}}</ion-label>
+      <ion-select #courseTypeIdRef="ngModel" name="courseTypeId" id="courseTypeId" [(ngModel)]="searchProviderCourseTypeId" >
+        <ion-select-option [value]=null>All</ion-select-option>
+        <ion-select-option *ngFor="let pcType of providerCourseTypes" [value]="pcType.id">{{pcType.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="learnTypes">
+      <ion-label position="stacked">{{translateUtil.translateKey('Learn type')}}</ion-label>
+      <ion-select #learnTypeIdRef="ngModel" name="learnTypeId" id="learnTypeId" [(ngModel)]="searchLearnTypeId" >
+        <ion-select-option [value]=null>All</ion-select-option>
+        <ion-select-option *ngFor="let learnType of learnTypes" [value]="learnType.id">{{learnType.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Date')}}</ion-label>
+      <ion-icon slot="end" name="calendar"></ion-icon>
+      <ion-datetime #searchDateRef = "ngModel"
+                    displayFormat="YY-MMM-DD"
+                    [(ngModel)]="searchDate"
+                    name="searchDate"
+                    min="2000"
+                    max="2029-01-10">
+      </ion-datetime>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button size="small" slot="start" (click)="onClearSearchDate()">Clear date</ion-button>
+      <ion-button size="small" slot="start" (click)="onReset()">Reset</ion-button>
+      <ion-button size="small" slot="end" (click)="onApplyFilters()">Apply</ion-button>
+    </ion-item>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="false && fromCommand!==appConstants.PAGE_FOR_AVAILABLE">
+    <!--<ion-item color="secondary" lines="none">-->
+      <!--<ion-label>{{translateUtil.translateKey('Program Types')}}</ion-label>-->
+      <!--<ion-select [(ngModel)]="appType" name="appType" (ngModelChange)="segmentChanged()">-->
+        <!--<ion-select-option *ngFor="let option of optionsList" [value]="option">{{translateUtil.translateKey(option)}}</ion-select-option>-->
+      <!--</ion-select>-->
+    <!--</ion-item>-->
+    <div>
+      <ion-button size="small" (click)="openPicker(2, 100, multiColumnOptions)">Programs Filter</ion-button>
+      <div class="smallText" style="padding-left: 10px;" *ngIf="selectedPcTypeName || selectedInstructorName">
+        <ion-text *ngIf="selectedPcTypeName" color="medium">{{selectedPcTypeName}}</ion-text>
+        <ion-text *ngIf="selectedPcTypeName && selectedInstructorName" color="dark" style="font-weight: bold"> / </ion-text>
+        <ion-text *ngIf="selectedInstructorName" color="medium">{{selectedInstructorName}}</ion-text>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="fromCommand===appConstants.PAGE_FOR_AVAILABLE">
+    <div *ngFor="let pcType of pcTypes">
+      <ion-list *ngIf="pcType.visibleCourseCount>0 && pcType.courses?.length>0">
+<!--        <ion-list-header (click)="onTogglePcType(pcType)" color="primary" class="listHeader">-->
+<!--          {{(pcType.expended?"-":"+")}}{{pcType.name}} ({{pcType.visibleCourseCount}})-->
+<!--        </ion-list-header>-->
+        <div *ngIf="true || pcType.expended">
+          <div *ngFor="let course of pcType.courses">
+            <ion-list *ngIf="!course.hide && !course.hidePickList && !course.filterHide" class="listContent">
+              <ion-item class="pointer" (click)="onViewDetails(course)" detail>
+                <ion-label text-wrap>
+                  <ion-badge *ngIf="course?.featured" color="orange">Recommended</ion-badge>
+                  <h2 *ngIf="course?.name" [ngClass]="{'featured' : course.featured}" class="titleLabel" [innerHtml]="utils.highlightSearchKeys(course?.name, searchKeys)"></h2>
+                  <h3 *ngIf="course?.instructorName" [ngClass]="{'featured' : course.featured}" class="titleLabel" no-margin [innerHtml]="utils.highlightSearchKeys(course?.instructorName, searchKeys)"></h3>
+                  <p *ngIf="provider?.showRating && course?.instructorId" style="padding-left: 15px !important;">
+                    <span class="stars alignleft" >
+                        <span [ngStyle]="{ width: utils.getStars(course?.instructorReviewScore) }"></span>
+                    </span>
+                            <span padding-start class="alignleft">
+                        <span>{{translateUtil.translateKey('reviews: ')}} {{(course?.instructorReviewScore==null)?0:course?.instructorReviewCount}}</span>
+                    </span>
+                  </p>
+  <!--                <h2 no-margin [innerHtml]="utils.highlightSearchKeys(course?.tripHillName, searchKeys)"></h2>-->
+                  <h3 no-margin *ngIf="course?.providerCourseTypeName">{{course?.providerCourseTypeName}}</h3>
+  <!--                <h2 no-margin *ngIf="course?.createdTypeName">{{course?.createdTypeName}}</h2>-->
+                  <h3 no-margin *ngIf="provider?.showCourseTime && course?.courseTime">Time: {{utils.formatDate(course?.courseTime)}}</h3>
+  <!--                <h2 no-margin *ngIf="course?.deadLine">Deadline: {{utils.formatDate(course?.deadLine)}}</h2>-->
+  <!--                <h2 no-margin *ngIf="course?.registrationCount">{{translateUtil.translateKey('Registration count')}}: {{course?.registrationCount}}</h2>-->
+                  <ion-badge *ngIf="userId>0 && (course?.instructorId===appSession.l_getInstructorId(providerId))">{{translateUtil.translateKey('My Programs')}}</ion-badge>
+<!--                  <h2 no-margin *ngIf="course?.sessionTimes">Sessions</h2>-->
+<!--                  <h2 no-margin *ngIf="course?.sessionTimes" [innerHtml]="utils.getSessionTimesString(course?.sessionTimes)"></h2>-->
+
+                  <p *ngIf="provider?.showCourseTag && course?.tags" text-wrap>
+                    <ion-chip *ngFor="let tag of utils.getTagListFromString(course.tags)" color="primary" outline>
+                      <ion-label color="orange">{{tag.trim()}}</ion-label>
+                    </ion-chip>
+                  </p>
+                </ion-label>
+              </ion-item>
+              <ion-item *ngIf="forChoose">
+                <button type="button" ion-button (click)="onChooseCourse(course.id)">
+                  {{translateUtil.translateKey('Choose Program')}}
+                </button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+      </ion-list>
+    </div>
+  </div>
+
+  <div *ngIf="fromCommand!==appConstants.PAGE_FOR_AVAILABLE">
+    <div *ngFor="let course of courses">
+      <ion-list *ngIf="!course.hide && !course.hidePickList && !course.filterHide" no-margin>
+        <ion-item class="pointer" (click)="onViewDetails(course)" detail>
+          <ion-label text-wrap>
+            <ion-badge *ngIf="course.featured" color="orange">Featured</ion-badge>
+            <h3 *ngIf="appSession.l_isSiteAdmin()"><ion-text color="orange">{{course.id}}</ion-text></h3>
+            <h3 class="titleLabel" [innerHtml]="utils.highlightSearchKeys(course?.name, searchKeys)"></h3>
+            <h3 no-margin [innerHtml]="utils.highlightSearchKeys(course?.instructorName, searchKeys)"></h3>
+            <p *ngIf="provider?.showRating && course?.instructorId" style="padding-left: 15px !important;">
+            <span class="stars alignleft" >
+                <span [ngStyle]="{ width: utils.getStars(course?.instructorReviewScore) }"></span>
+            </span>
+              <span padding-start class="alignleft">
+                <span>{{translateUtil.translateKey('reviews: ')}} {{(course?.instructorReviewScore==null)?0:course?.instructorReviewCount}}</span>
+            </span>
+            </p>
+            <h3 no-margin [innerHtml]="utils.highlightSearchKeys(course?.tripHillName, searchKeys)"></h3>
+            <h3 no-margin *ngIf="course?.providerCourseTypeName">{{course?.providerCourseTypeName}}</h3>
+            <h3 no-margin *ngIf="course?.createdTypeName">{{course?.createdTypeName}}</h3>
+            <h3 no-margin *ngIf="provider?.showCourseTime && course?.courseTime">Time: {{utils.formatDate(course?.courseTime)}}</h3>
+            <h3 no-margin *ngIf="course?.deadLine">Deadline: {{utils.formatDate(course?.deadLine)}}</h3>
+            <h3 no-margin *ngIf="(appSession.l_isAdministrator(providerId) || appSession.l_isInstructor(providerId) || appSession.l_isSiteAdmin()) && course?.registrationCount">
+              {{translateUtil.translateKey('Registration count')}}: {{course?.registrationCount}}</h3>
+            <ion-badge *ngIf="course.instructorId==appSession.l_getInstructorId(providerId)">{{translateUtil.translateKey('My Programs')}}</ion-badge>
+            <h3 no-margin *ngIf="course?.sessionTimes">{{course?.sessionTimes.length}} sessions</h3>
+<!--            <h3 no-margin *ngIf="course?.sessionTimes && course?.sessionTimesExpended" [innerHtml]="utils.getSessionTimesString(course?.sessionTimes)"></h3>-->
+            <p *ngIf="provider?.showCourseTag && course?.tags" text-wrap>
+              <ion-chip *ngFor="let tag of utils.getTagListFromString(course.tags)" color="primary" outline>
+                <ion-label color="orange">{{tag.trim()}}</ion-label>
+              </ion-chip>
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="forChoose" lines="none">
+          <button type="button" ion-button (click)="onChooseCourse(course.id)">
+            {{translateUtil.translateKey('Choose Program')}}
+          </button>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+
+  <div class="scroll-content"></div>
+  <!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
+  <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,232 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}Confirmation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!--Main content.-->
+<ion-content >
+  <ion-list *ngIf="registration" class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{registration.title}}
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label position="stacked" text-wrap>{{translateUtil.translateKey('I\'m 18 years or older, and I have read and agree with the consent')}}
+        <ion-text color="danger">*</ion-text></ion-label>
+      <ion-checkbox id="consentId" [(ngModel)]="registration.isConsent" name="consent" #isConsentRef="ngModel" required></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-button expand="block" size="small" (click)="onViewConsent()">
+        {{translateUtil.translateKey('View consent')}}</ion-button>
+    </ion-item>
+    <ion-item *ngIf="isConsentRef.errors?.required && submitted">
+      <ion-label color="danger" >{{translateUtil.translateKey('Consent required')}}</ion-label>
+    </ion-item>
+
+    <div *ngIf="!course?.isCamp">
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Class type')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-select name="SkiCourseType" id="skiCourseTypeId" [(ngModel)]="registration.providerCourseTypeId" (ngModelChange)="courseTypeChanged()"
+                    [disabled]="disableProviderCourseType" required>
+          <ion-select-option *ngFor="let courseType of availableProviderCourseTypes" [value]="courseType?.id">{{courseType?.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="!registration?.providerCourseTypeId && submitted" lines="none">
+        <ion-label color="danger" >{{translateUtil.translateKey('Class type required')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Learn type')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-select name="learnType" id="learnTypeId" [(ngModel)]="registration.learnTypeId" [disabled]="disableLearnType" required>
+          <ion-select-option *ngFor="let learnType of learnTypes" [value]="learnType?.id">{{learnType?.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="!registration.learnTypeId && submitted" lines="none">
+        <ion-label color="danger" >{{translateUtil.translateKey('Learn type required')}}</ion-label>
+      </ion-item>
+    </div>
+
+    <ion-item *ngIf="registration.courseId && appSession.l_isSiteAdmin() || appSession.l_isInstructor(providerId) || appSession.l_isAdministrator(providerId)">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program Id')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.courseId}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="registration.instructorName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Instructor')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.instructorName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="registration.courseName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program name')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.courseName}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="registration?.tripHillName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Organized Trip Destination')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.tripHillName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_hasCurrentProviderAccount(providerId)" (click)="onRegisterDetails(registration.userId)" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Register name')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.registerName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="registration.instructorName" (click)="onInstructorDetails(registration.instructorId)" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Instructor name')}}</h2>
+        </ion-text>
+        <ion-text>{{registration.instructorName}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="registration?.comments">
+      <ion-label position="stacked">{{translateUtil.translateKey('Comments')}}</ion-label>
+      <ion-textarea class="small" [(ngModel)]="registration.comments"  name="comments"
+                    #commentsRef="ngModel"
+                    maxlength="1000"></ion-textarea>
+      <ion-label color="danger" *ngIf="commentsRef.errors?.maxlength" text-wrap>{{translateUtil.translateKey('Comments')}} {{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--Student names-->
+  <ion-list class="listContent">
+    <ion-list-header color="primary" text-wrap>
+      <ion-text>{{translateUtil.translateKey('Students')}}</ion-text>
+    </ion-list-header>
+    <ion-item-divider>
+      <ion-text color="orange">Please register separately for each session</ion-text>
+    </ion-item-divider>
+    <ion-grid *ngFor="let student of registration?.students; let i = index">
+      <ion-row *ngIf="namesEmptyError && submitted">
+        <ion-col>
+          <ion-item lines="none" >
+            <ion-label color="danger" >{{namesEmptyError}}</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="student.error && submitted">
+        <ion-col>
+          <ion-text color="danger"><h5>{{student.error}}</h5></ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10">
+          <ion-row id="student_{{i}}" >
+            <ion-col class="eventsCol" size="10" (click)="onUpdateStudent(student)">
+              <p no-margin class="fieldLabel" [ngClass]="(student.name) ? 'fieldLabel' : 'danger'">{{translateUtil.translateKey('Student Name')}}</p>
+              <h5 no-margin id="studentNameId">{{student.name}}</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row (click)="onUpdateStudent(student)">
+            <ion-col class="eventsCol" *ngIf="useBirthDay" size="6">
+              <p no-margin class="fieldLabel">{{translateUtil.translateKey('Birthday')}}</p>
+              <h5 no-margin>{{utils.formatDateShort(student.birthDay)}}</h5>
+            </ion-col>
+            <ion-col class="eventsCol" *ngIf="!useBirthDay" size="6">
+              <p no-margin class="fieldLabel" [ngClass]="(student.ageRangeOptionId) ? 'fieldLabel' : 'danger'">{{translateUtil.translateKey('Age')}}</p>
+              <h5 no-margin>{{student.ageRangeOptionName}}</h5>
+            </ion-col>
+            <ion-col class="eventsCol" size="6">
+              <p no-margin class="fieldLabel" [ngClass]="(student.levelOptionId) ? 'fieldLabel' : 'danger'">{{translateUtil.translateKey('Level')}}</p>
+              <h5 no-margin>{{student.levelOptionName}}</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="enableLiftTicket || enableRental" (click)="onUpdateStudent(student)">
+            <ion-col class="eventsCol" *ngIf="enableLiftTicket" col-4>
+              <p no-margin class="fieldLabel">{{translateUtil.translateKey('Need Lift Ticket?')}}</p>
+              <h5 no-margin>{{utils.getYesNo(student.liftTicket)}}</h5>
+            </ion-col>
+            <ion-col class="eventsCol" *ngIf="enableRental" col-4>
+              <p no-margin class="fieldLabel">{{translateUtil.translateKey('Need Ski/Snowboard Rental?')}}</p>
+              <h5 no-margin>{{utils.getYesNo(student.skiRental)}}</h5>
+            </ion-col>
+            <ion-col class="eventsCol" *ngIf="enableRental" col-4>
+              <p no-margin class="fieldLabel">{{translateUtil.translateKey('Need Helmet? (Helmet is mandatory)')}}</p>
+              <h5 no-margin>{{utils.getYesNo(student.helment)}}</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="student.comments" (click)="onUpdateStudent(student)" text-wrap>
+            <ion-col class="eventsCol" text-wrap>
+              <p no-margin class="fieldLabel">{{translateUtil.translateKey('Comments')}}</p>
+              <h5 no-margin text-wrap style="white-space: normal;">{{student.comments}}</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="onDeleteStudentName(student)"><ion-icon name="trash"></ion-icon></ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="2" (click)="onUpdateStudent(student)">
+          <ion-item lines="none" detail></ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-item-divider *ngIf="studentSpace>0">{{studentSpace}} {{translateUtil.translateKey('spaces')}}</ion-item-divider>
+    <ion-button id="addStudentBtnId" type="button" size="small" expand="block" (click)="l_addUpdateStudent()" [disabled]="studentSpace<=0">
+      {{translateUtil.translateKey('Add Student')}}
+    </ion-button>
+
+    <!--    choose sessionTime-->
+    <div *ngIf="course?.isCamp && course?.allowSelectSessions===true && course?.sessionTimes && course?.sessionTimes.length>0">
+      <ion-item *ngIf="sessionTimeError && submitted">
+        <ion-label color="danger" >{{sessionTimeError}}</ion-label>
+      </ion-item>
+      <ion-list-header color="primary">
+        {{translateUtil.translateKey('Choose session time')}}
+      </ion-list-header>
+      <ion-item *ngFor="let sessionTime of course?.sessionTimes">
+        <ion-label>
+          <h2 *ngIf="sessionTime.name" class="fieldLabel">{{sessionTime.name}}</h2>
+          <h2 *ngIf="sessionTime.instructorName" class="fieldLabel">Mandatory: {{utils.getYesNo(sessionTime.instructorName)}}</h2>
+          <h2 *ngIf="sessionTime.startTime" class="fieldLabel">Date: {{utils.formatDateShort(sessionTime.startTime)}}</h2>
+          <h2 *ngIf="sessionTime.startTime" class="fieldLabel">{{utils.formatTimeOfDate(sessionTime.startTime)}} to {{utils.formatTimeOfDate(sessionTime.endTime)}}</h2>
+          <h2 *ngIf="sessionTime.tripHillName" class="fieldLabel">{{sessionTime.tripHillName}}</h2>
+          <h2 *ngIf="sessionTime.mandatory" class="fieldLabel">Mandatory: {{utils.getYesNo(sessionTime.mandatory)}}</h2>
+        </ion-label>
+        <ion-checkbox [(ngModel)]="sessionTime.checked"></ion-checkbox>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class="scroll-content"></div>
+</ion-content>
+
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;"  (click)="onConfirm()" [disabled]="getDisableBtn()">
+          {{translateUtil.translateKey('Confirm')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;"   (click)="onClose()">
+          {{translateUtil.translateKey('Cancel')}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
+

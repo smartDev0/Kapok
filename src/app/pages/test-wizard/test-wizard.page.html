@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Test Wizard Page')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-slides #slides pager="true" [options]="slideOpts" style="margin-left: 20px; margin-right: 20px;">
+    <ion-slide>
+      <form #formRef_1="ngForm" >
+        <h1>Slide 1 with form</h1>
+
+        <ion-item>
+          <ion-label position="stacked" class="fieldLabel">{{translateUtil.translateKey('First name')}}<ion-text color="danger">*</ion-text></ion-label>
+          <ion-input type="text"
+                     [(ngModel)]="firstName"
+                     name="firstName"
+                     #firstNameRef="ngModel"
+                     maxlength="200"
+                     required>
+          </ion-input>
+        </ion-item>
+        <ion-item *ngIf="firstNameRef.errors?.required && submits[0]" lines="none">
+          <ion-label color="danger" text-wrap>{{translateUtil.translateKey('First name required')}}</ion-label>
+        </ion-item>
+      </form>
+    </ion-slide>
+    <ion-slide>
+      <form #formRef_2="ngForm" style="width: 100%">
+      <h1>Slide 2 with form</h1>
+        <ion-list>
+          <ion-list-header color="secondary" >
+            {{translateUtil.translateKey('Rental')}}
+          </ion-list-header>
+          <ion-item>
+            <ion-checkbox id="needRentalCheckBox" name="needRental">Need rental?</ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-slide>
+    <ion-slide>
+      <form #formRef_3="ngForm" >
+        <h1>Slide 3</h1>
+      </form>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+
+<ion-footer no-padding>
+  <ion-grid no-padding>
+    <ion-row no-padding>
+      <ion-col col-6 no-padding>
+        <ion-button style="float:left; margin-left: 10px; margin-bottom: 10px;" (click)="goPrevious()" [disabled]="isSlideBegin || finalSubmit">
+          {{translateUtil.translateKey('Previous')}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" no-padding></ion-col>
+      <ion-col size="5" no-padding>
+        <ion-button style="float:right; margin-right: 10px; margin-bottom: 10px;" (click)="continueSlide()" [disabled]="finalSubmit">
+          {{(!isSlideEnd?translateUtil.translateKey('Next'):translateUtil.translateKey('Submit'))}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

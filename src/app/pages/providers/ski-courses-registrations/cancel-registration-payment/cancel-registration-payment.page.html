@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Cancel Registration')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{(registration)?.title}}
+    </ion-list-header>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program Name')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.courseName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Program type')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.providerCourseTypeName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Created on')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate((registration)?.createdDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Organized Trip Destination')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.tripHillName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.registerName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Member name')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.registerName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.instructorName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Instructor name')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.instructorName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.paymentStatusName">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Payment Status')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.paymentStatusName}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-list-header color="secondary" *ngIf="(registration)?.invoices">{{translateUtil.translateKey('Payment Status')}}</ion-list-header>
+    <ion-item *ngFor="let invoice of (registration)?.invoices">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">Invoice Id {{invoice.id}}</h2>
+        </ion-text>
+        <ion-text><p>Amount: ${{invoice.amount}}</p></ion-text>
+        <ion-text><p>Invoice date: {{utils.formatDate(invoice.createdDate)}}</p></ion-text>
+        <ion-text><p>Payment status: {{invoice.statusName}}</p></ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-list-header color="secondary" *ngIf="(registration)?.comments">{{translateUtil.translateKey('Notes')}}</ion-list-header>
+    <ion-item *ngIf="registration?.comments">
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Comments')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.comments}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-list-header *ngIf="(registration)?.email" color="secondary" >{{translateUtil.translateKey('Guest contact')}}</ion-list-header>
+    <ion-item *ngIf="(registration)?.email" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Guest Email')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.email}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.contactName" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Guest Name')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.contactName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.phoneNumber" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Guest Phone Number')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.phoneNumber}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(registration)?.weChatNum" detail>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Guest WeChat')}}</h2>
+        </ion-text>
+        <ion-text>{{(registration)?.weChatNum}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--Student names-->
+  <ion-list class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('Students Information')}}
+    </ion-list-header>
+    <ion-item *ngFor="let student of registration?.students">
+      <ion-grid>
+        <ion-row>
+          <ion-col class="eventsCol" col-12>
+            <p no-margin class="fieldLabel" >{{translateUtil.translateKey('Student Name')}}</p>
+            <p no-margin >{{student.name}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col *ngIf="student.useBirthDay" class="eventsCol" col-6>
+            <p no-margin class="fieldLabel" >{{translateUtil.translateKey('Birthday')}}</p>
+            <p no-margin >{{utils.formatDateShort(student.birthDay)}}</p>
+          </ion-col>
+          <ion-col *ngIf="!student.useBirthDay" class="eventsCol" col-6>
+            <p no-margin class="fieldLabel" >{{translateUtil.translateKey('Age Range')}}</p>
+            <p no-margin >{{student.ageRangeOptionName}}</p>
+          </ion-col>
+          <ion-col class="eventsCol" col-6>
+            <p no-margin class="fieldLabel">{{translateUtil.translateKey('Level')}}</p>
+            <p no-margin >{{student.levelOptionName}}</p>
+          </ion-col>
+        </ion-row>
+        <!--<ion-row>-->
+        <!--<ion-col col-6>-->
+        <!--<p class="fieldLabel">{{translateUtil.translateKey('Need Lift?')}}</p>-->
+        <!--<h2>{{studentUtil.getYesNo(student.liftTicket)}}</h2>-->
+        <!--</ion-col>-->
+        <!--<ion-col col-6>-->
+        <!--<p class="fieldLabel">{{translateUtil.translateKey('Need Rental?')}}</p>-->
+        <!--<h2>{{studentUtil.getYesNo(student.skiRental)}}</h2>-->
+        <!--</ion-col>-->
+        <!--</ion-row>-->
+      </ion-grid>
+    </ion-item>
+    <ion-button size="small" expand="block" (click)="onViewCourseDetails()" >{{translateUtil.translateKey('Program Details')}}</ion-button>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

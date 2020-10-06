@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Upcoming Trips')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list no-margin>
+    <div *ngFor="let trip of trips">
+      <ion-item lines="none">
+        <ion-label text-wrap>
+          <h2 class="titleLabel" >{{trip?.title}}</h2>
+          <h2 no-margin *ngIf="trip?.tripHillName">Organized Trip Destination: {{trip?.tripHillName}}</h2>
+          <!--<h2 no-margin >Location: {{trip?.location}}</h2>-->
+          <h2 no-margin *ngIf="trip?.time">Date: {{utils.formatDateOnlyWithWeek(trip?.time)}}</h2>
+          <h2 no-margin *ngIf="trip?.deadLine">Registration deadline: {{utils.formatDate(trip?.deadLine)}}</h2>
+          <p *ngIf="showAdminFunction()" no-margin text-wrap><ion-text color="orange">Total: {{getTotalTicketCount(trip)}}</ion-text></p>
+          <p *ngIf="showAdminFunction()" no-margin text-wrap><ion-text color="orange">Enabled: {{utils.getYesNo(trip?.enabled)}}</ion-text></p>
+        </ion-label>
+        <ion-button slot="end" *ngIf="showAdminFunction()" (click)="onLogicalDeleteTrip(trip?.id)"><ion-icon name="trash"></ion-icon></ion-button>
+      </ion-item>
+      <ion-item text-wrap>
+        <ion-button slot="start" size="small" (click)="onViewDetails(trip)"> {{translateUtil.translateKey('Trip Details')}}</ion-button>
+        <ion-button slot="start" size="small" (click)="showChooseCoursePopup(trip)"> {{translateUtil.translateKey('Lessons')}}</ion-button>
+<!--        <ion-button slot="start" size="small" (click)="onChooseCourseTime(LESSONCMD_GROUP, trip.id)"> {{translateUtil.translateKey('Beginner group lessons')}}</ion-button>-->
+<!--        <ion-button slot="start" size="small" (click)="onChooseCourseTime(LESSONCMD_PRIVATE, trip.id)"> {{translateUtil.translateKey('Private lessons')}}</ion-button>-->
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

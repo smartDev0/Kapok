@@ -1,0 +1,512 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('InstructorTime Edit')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="listContent" class="listContent" *ngIf="schedule" #formRef="ngForm" (ngSubmit)="saveSchedule(formRef)">
+    <ion-list-header color="secondary" class="listHeader">
+      {{translateUtil.translateKey('Basic')}}
+    </ion-list-header>
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Name')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text"
+                 [(ngModel)]="schedule.title"
+                 name="schedule.title"
+                 #titleRef="ngModel"
+                 maxlength="200"
+                 required>
+      </ion-input>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Title required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="titleRef.errors?.maxlength" lines="none">
+      <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Title')}} {{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="appSession.l_isSiteAdmin()">
+      <p><ion-text color="orange">userId: {{schedule.userId}}</ion-text></p>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_isSiteAdmin()">
+      <p><ion-text color="orange">instructorId: {{schedule.instructorId}}</ion-text></p>
+    </ion-item>
+    <ion-item *ngIf="appSession.l_isSiteAdmin()">
+      <p><ion-text color="orange">providerId: {{schedule.providerId}}</ion-text></p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Description')}}</ion-label>
+      <ion-textarea class="small" [(ngModel)]="schedule.description"  name="description"
+                    #descriptionRef="ngModel" maxlength="1000" ></ion-textarea>
+    </ion-item>
+    <ion-item *ngIf="descriptionRef.errors?.maxlength">
+      <ion-label color="danger" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="false">
+      <ion-label>{{translateUtil.translateKey('InstructorTime type')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select [(ngModel)]="schedule.scheduleTypeId" name="pcType" [disabled]="true">
+        <ion-select-option *ngFor="let schType of scheduleTypes" [value]="schType.id">{{schType.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label >{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-toggle name="enabled" [(ngModel)]="schedule.enabled"></ion-toggle>
+    </ion-item>
+
+    <ion-item-divider></ion-item-divider>
+
+    <div *ngIf="schedule.scheduleTypeId===appConstants.SCHEDULE_TYPE_COURSE">
+      <ion-list>
+        <ion-list-header color="secondary" class="listHeader">
+          <ion-text>{{translateUtil.translateKey('Courses')}}<ion-text color="danger">*</ion-text></ion-text>
+        </ion-list-header>
+        <ion-item *ngFor="let course of schedule.courses">
+          <ion-label padding-bottom>
+            <ion-text>{{course.name}}</ion-text>
+          </ion-label>
+          <ion-button slot="start" (click)="onDeleteCourse(course)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+        <ion-button size="small" expand="block" (click)="onAddCourse()">+</ion-button>
+      </ion-list>
+    </div>
+
+    <div *ngIf="schedule.scheduleTypeId===appConstants.SCHEDULE_TYPE_TIME">
+      <ion-list>
+        <ion-list-header color="secondary" class="listHeader">
+          <ion-text>{{translateUtil.translateKey('Learn types')}}<ion-text color="danger">*</ion-text></ion-text>
+        </ion-list-header>
+        <ion-item *ngFor="let learnType of schedule.learnTypes">
+          <ion-label padding-bottom>
+            <ion-text>{{learnType.name}}</ion-text>
+          </ion-label>
+          <ion-button slot="start" (click)="onDeleteLearnType(learnType)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+        <ion-button size="small" expand="block" (click)="onAddLearnType()">+</ion-button>
+      </ion-list>
+
+      <ion-list>
+        <ion-list-header color="secondary" class="listHeader">
+          <ion-text>{{translateUtil.translateKey('Program types')}}<ion-text color="danger">*</ion-text></ion-text>
+        </ion-list-header>
+        <ion-item *ngFor="let pcType of schedule.providerCourseTypes">
+          <ion-label padding-bottom>
+            <ion-text>{{pcType.name}}</ion-text>
+          </ion-label>
+          <ion-button slot="start" (click)="onDeleteProviderCourseType(pcType)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+        <ion-button size="small" expand="block" (click)="onAddProviderCourseType()">+</ion-button>
+      </ion-list>
+
+      <ion-list>
+        <ion-list-header color="secondary" class="listHeader">
+          <ion-text>{{translateUtil.translateKey('Trip Hills')}}<ion-text color="danger">*</ion-text></ion-text>
+        </ion-list-header>
+        <ion-item *ngFor="let tripHill of schedule.tripHills">
+          <ion-label padding-bottom>
+            <ion-text>{{tripHill.locationStr}}</ion-text>
+          </ion-label>
+          <ion-button slot="start" (click)="onDeleteTripHill(tripHill)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-item>
+        <ion-button size="small" expand="block" (click)="onAddTripHill()">+</ion-button>
+      </ion-list>
+    </div>
+
+    <div style="margin-top: 20px"></div>
+    <ion-list-header color="orange" class="listHeader">
+      {{translateUtil.translateKey('Recurrences')}}
+    </ion-list-header>
+    <ion-list *ngFor="let recType of recurrenceTypes" margin-bottom="3px;">
+      <ion-list-header (click)="onToggleRecurrence(recType)" color="primary" class="listHeader">
+        {{(recType.expended?"-":"+")}}{{recType.name}} {{((recType.recurrences?.length>0)?("("+recType.recurrences?.length+")"):'')}}
+      </ion-list-header>
+      <div *ngIf="recType.expended">
+        <ion-button size="small" expand="block" (click)="onAddRecurrence(recType)">Add Recurrence</ion-button>
+        <div *ngFor="let recurrence of recType.recurrences">
+          <ion-item detail>
+            <ion-label (click)="onViewRecurrence(recType, recurrence)">
+              <h2 >{{recurrence.title}}</h2>
+              <h3 *ngIf="recurrence.validFrom">Valid from {{utils.formatDate(recurrence.validFrom)}} to {{utils.formatDate(recurrence.validTo)}}</h3>
+            </ion-label>
+            <ion-button slot="start" (click)="onDeleteRecurrence(recType, recurrence)"><ion-icon name="trash"></ion-icon></ion-button>
+          </ion-item>
+        </div>
+
+        <div *ngIf="recType.selectedRecurrence">
+          <!-- recurrence basic -->
+          <ion-item>
+            <ion-label position="stacked">{{translateUtil.translateKey('title')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input type="text" class="small" [(ngModel)]="recType.selectedRecurrence.title"  name="selectedRecurrence.title"
+                          #recurTitleRef="ngModel" maxlength="1000" ></ion-input>
+          </ion-item>
+          <ion-item *ngIf="recurTitleRef.errors?.maxlength && submitted">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+          </ion-item>
+          <ion-item *ngIf="recurTitleRef.errors?.required && submitted">
+            <ion-label color="danger" text-wrap>{{translateUtil.translateKey('Title is required')}}</ion-label>
+          </ion-item>
+          <ion-item >
+            <ion-label position="stacked">{{translateUtil.translateKey('Valid from')}}<ion-text *ngIf="recType.id!==appConstants.RECURRENCE_TYPE_ONDATE" color="danger">*</ion-text></ion-label>
+            <ion-icon slot="end" name="time"></ion-icon>
+            <ion-datetime #validFromRef = "ngModel"
+                          displayFormat="YY-MMM-DD"
+                          [(ngModel)]="recType.selectedRecurrence.validFrom"
+                          name="validFrom"
+                          min="2017"
+                          max="2029-01-10">
+            </ion-datetime>
+          </ion-item>
+          <ion-item >
+            <ion-label position="stacked">{{translateUtil.translateKey('Valid to')}}<ion-text *ngIf="recType.id!==appConstants.RECURRENCE_TYPE_ONDATE" color="danger">*</ion-text></ion-label>
+            <ion-icon slot="end" name="time"></ion-icon>
+            <ion-datetime #validToRef = "ngModel"
+                          displayFormat="YY-MMM-DD"
+                          [(ngModel)]="recType.selectedRecurrence.validTo"
+                          name="validTo"
+                          min="2017"
+                          max="2029-01-10">
+            </ion-datetime>
+          </ion-item>
+          <ion-item >
+            <ion-label position="stacked">{{translateUtil.translateKey('On date (the first recurrence date)')}}<ion-text color="danger">*</ion-text></ion-label>
+            <ion-icon slot="end" name="time"></ion-icon>
+            <ion-datetime #onDateRef = "ngModel"
+                          displayFormat="YY-MMM-D DDD"
+                          [(ngModel)]="recType.selectedRecurrence.onDate"
+                          name="onDate"
+                          min="2017"
+                          max="2029-01-10">
+            </ion-datetime>
+          </ion-item>
+          <ion-item>
+            <ion-button type="button" (click)="deleteOnDate(recType.selectedRecurrence)" [disabled]="!recType.selectedRecurrence.onDate">
+              {{translateUtil.translateKey('Delete date')}}
+            </ion-button>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">{{translateUtil.translateKey('Deadline')}}</ion-label>
+            <ion-datetime #deadlineRef = "ngModel"
+                          displayFormat="YY-MMM-DD HH:mm"
+                          [(ngModel)]="recType.selectedRecurrence.deadline"
+                          name="deadline"
+                          min="2017"
+                          max="2038-01-10"
+                          minuteValues="0,30">
+            </ion-datetime>
+          </ion-item>
+          <ion-item >
+            <ion-button type="button" (click)="deleteDeadline(recType.selectedRecurrence)" [disabled]="!recType.selectedRecurrence?.deadline">
+              {{translateUtil.translateKey('Delete deadline')}}
+            </ion-button>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">{{translateUtil.translateKey('Number of hours before as deadline')}}</ion-label>
+            <ion-input type="number"
+                       [(ngModel)]="recType.selectedRecurrence.deadlineHoursBefore"
+                       name="deadlineHoursBefore"
+                       #deadlineHoursBeforeRef="ngModel"
+                       min="1"
+                       max="300">
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">{{translateUtil.translateKey('Registration code')}}</ion-label>
+            <ion-input type="text"
+                       [(ngModel)]="recType.selectedRecurrence.registerCode"
+                       name="registerCode"
+                       #registerCodeRef="ngModel">
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" color="orange">{{translateUtil.translateKey('Blocked!')}}</ion-label>
+            <ion-checkbox name="blocked" [(ngModel)]="recType.selectedRecurrence.blocked"></ion-checkbox>
+          </ion-item>
+
+          <!--  single day -->
+          <ion-list *ngIf="recType.id===appConstants.RECURRENCE_TYPE_ONDATE" margin-bottom="3px;">
+            <ion-item-divider>Fields for single day</ion-item-divider>
+            <ion-item>
+              <ion-label >{{translateUtil.translateKey('Place holder for daily recurrence.')}}</ion-label>
+            </ion-item>
+          </ion-list>
+
+          <!--  daily -->
+          <ion-list *ngIf="recType.id===appConstants.RECURRENCE_TYPE_DAILY" margin-bottom="3px;">
+            <ion-item-divider>Fields for daily</ion-item-divider>
+            <ion-item>
+              <ion-label >{{translateUtil.translateKey('Every week day')}}</ion-label>
+              <ion-toggle name="everyWeekDay" [(ngModel)]="recType.selectedRecurrence.everyWeekDay"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label >{{translateUtil.translateKey('Every weekend day')}}</ion-label>
+              <ion-toggle name="everyWeekendDay" [(ngModel)]="recType.selectedRecurrence.everyWeekendDay"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('Every number of days')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.everyNumOfDay"
+                         name="everyNumOfDay"
+                         #everyNumOfDayRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('Total recurrence')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.totalRecurrence"
+                         name="totalRecurrence"
+                         #totalRecurrenceRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <!--  weekly -->
+          <ion-list *ngIf="recType.id===appConstants.RECURRENCE_TYPE_WEEKLY" margin-bottom="3px;">
+            <ion-item-divider>Fields for weekly</ion-item-divider>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('From day of week')}}</ion-label>
+              <ion-select [(ngModel)]="recType.selectedRecurrence.fromDayOfWeek" name="fromDayOfWeek" >
+                <ion-select-option *ngFor="let weekDay of appConstants.weekDays" [value]="appConstants.weekDays.indexOf(weekDay)">{{weekDay}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('To day of week')}}</ion-label>
+              <ion-select [(ngModel)]="recType.selectedRecurrence.toDayOfWeek" name="toDayOfWeek" >
+                <ion-select-option *ngFor="let weekDay of appConstants.weekDays" [value]="appConstants.weekDays.indexOf(weekDay)">{{weekDay}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('Every number of week')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.everyNumOfWeek"
+                         name="everyNumOfWeek"
+                         #everyNumOfWeekRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+<!--              <ion-item>-->
+<!--                <ion-label position="stacked">{{translateUtil.translateKey('From week of month')}}</ion-label>-->
+<!--                <ion-input type="number"-->
+<!--                           [(ngModel)]="recurrence.fromWeekOfMonth"-->
+<!--                           name="fromWeekOfMonth"-->
+<!--                           #fromWeekOfMonthRef="ngModel"-->
+<!--                           min="1"-->
+<!--                           max="100">-->
+<!--                </ion-input>-->
+<!--              </ion-item>-->
+<!--              <ion-item>-->
+<!--                <ion-label position="stacked">{{translateUtil.translateKey('To week of month')}}</ion-label>-->
+<!--                <ion-input type="number"-->
+<!--                           [(ngModel)]="recurrence.toWeekOfMonth"-->
+<!--                           name="toWeekOfMonth"-->
+<!--                           #toWeekOfMonthRef="ngModel"-->
+<!--                           min="1"-->
+<!--                           max="100">-->
+<!--                </ion-input>-->
+<!--              </ion-item>-->
+<!--              <ion-item>-->
+<!--                <ion-label position="stacked">{{translateUtil.translateKey('From week of year')}}</ion-label>-->
+<!--                <ion-input type="number"-->
+<!--                           [(ngModel)]="recurrence.fromWeekOfYear"-->
+<!--                           name="fromWeekOfYear"-->
+<!--                           #fromWeekOfYearRef="ngModel"-->
+<!--                           min="1"-->
+<!--                           max="100">-->
+<!--                </ion-input>-->
+<!--              </ion-item>-->
+<!--              <ion-item>-->
+<!--                <ion-label position="stacked">{{translateUtil.translateKey('To week of year')}}</ion-label>-->
+<!--                <ion-input type="number"-->
+<!--                           [(ngModel)]="recurrence.toWeekOfYear"-->
+<!--                           name="toWeekOfYear"-->
+<!--                           #toWeekOfYearRef="ngModel"-->
+<!--                           min="1"-->
+<!--                           max="100">-->
+<!--                </ion-input>-->
+<!--              </ion-item>-->
+          </ion-list>
+
+          <!--  monthly -->
+          <ion-list *ngIf="recType.id===appConstants.RECURRENCE_TYPE_MONTHLY" margin-bottom="3px;">
+            <ion-item-divider>Fields for monthly</ion-item-divider>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('From day of month')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.fromDayOfMonth"
+                         name="fromDayOfMonth"
+                         #fromDayOfMonthRef="ngModel"
+                         min="1"
+                         max="31">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('To day of month')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.toDayOfMonth"
+                         name="toDayOfMonth"
+                         #toDayOfMonthRef="ngModel"
+                         min="1"
+                         max="31">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('Every number of month')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.everyNumOfMonth"
+                         name="everyNumOfMonth"
+                         #everyNumOfMonthRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('From month of year')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.fromMonthOfYear"
+                         name="fromMonthOfYear"
+                         #fromMonthOfYearRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('To month of year')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.toMonthOfYear"
+                         name="toMonthOfYear"
+                         #toMonthOfYearRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <!--  yearly -->
+          <ion-list *ngIf="recType.id===appConstants.RECURRENCE_TYPE_YEARLY" margin-bottom="3px;">
+            <ion-item-divider>Fields for yearly</ion-item-divider>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('From day of year')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.fromDayOfYear"
+                         name="fromDayOfYear"
+                         #fromDayOfYearRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('To day of year')}}<ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.toDayOfYear"
+                         name="toDayOfYear"
+                         #toDayOfYearRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{translateUtil.translateKey('Every number of year')}}</ion-label>
+              <ion-input type="number"
+                         [(ngModel)]="recType.selectedRecurrence.everyNumOfYear"
+                         name="everyNumOfYear"
+                         #everyNumOfYearRef="ngModel"
+                         min="1"
+                         max="100">
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <!-- TimeSlots -->
+          <ion-list-header color="secondary" class="listHeader">
+            <ion-text>{{translateUtil.translateKey('Time slots')}} <ion-text color="danger">*</ion-text></ion-text>
+          </ion-list-header>
+          <ion-list margin-bottom="3px;">
+            <ion-button size="small" expand="block" (click)="onAddTimeSlot(recType.selectedRecurrence)">Add time slot</ion-button>
+            <ion-item *ngFor="let timeSlot of recType.selectedRecurrence.timeSlots; let i = index;" detail>
+              <ion-label (click)="onViewTimeSlot(recType.selectedRecurrence, timeSlot)">
+                <h3>{{utils.formatTimeOfDate(timeSlot.startTime)}} to {{utils.formatTimeOfDate(timeSlot.endTime)}}</h3>
+              </ion-label>
+              <ion-button slot="start" (click)="onDeleteTimeSlot(recType.selectedRecurrence, timeSlot)"><ion-icon name="trash"></ion-icon></ion-button>
+            </ion-item>
+            <!-- timeSlotEdit -->
+            <div *ngIf="recType.selectedRecurrence.selectedTimeSlot">
+              <ion-item>
+                <ion-label position="stacked">{{translateUtil.translateKey('Start time')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-datetime #tsStartTimeRef = "ngModel"
+                              displayFormat="HH:mm"
+                              [(ngModel)]="recType.selectedRecurrence.selectedTimeSlot.startTime"
+                              name="tsStartTime"
+                              minuteValues="0,30">
+                </ion-datetime>
+              </ion-item>
+              <!--                  hourValues="8,9,10,11,12,13,14,15,16"-->
+              <ion-item>
+                <ion-label position="stacked">{{translateUtil.translateKey('End time')}}<ion-text color="danger">*</ion-text></ion-label>
+                <ion-datetime #tsEndTimeRef = "ngModel"
+                              displayFormat="HH:mm"
+                              [(ngModel)]="recType.selectedRecurrence.selectedTimeSlot.endTime"
+                              name="tsEndTime"
+                              minuteValues="0,30">
+                </ion-datetime>
+              </ion-item>
+              <!--   TimeSlot expand and spaces     -->
+              <ion-item>
+                <ion-label position="stacked">{{translateUtil.translateKey('TimeSlot expand minutes')}}. (Better to be integer times of 60 minutes)</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="recType.selectedRecurrence.selectedTimeSlot.minutesSlot"
+                           name="minutesSlot"
+                           #minutesSlotRef="ngModel"
+                           min="0"
+                           max="1440">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">{{translateUtil.translateKey('Time space before timeSlot minutes')}}. (Less then 60)</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="recType.selectedRecurrence.selectedTimeSlot.minutesSpaceBefore"
+                           name="minutesSpaceBefore"
+                           #minutesSpaceBeforeRef="ngModel"
+                           min="0"
+                           max="60">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">{{translateUtil.translateKey('Time space after timeSlot minutes')}}. (Less then 60)</ion-label>
+                <ion-input type="number"
+                           [(ngModel)]="recType.selectedRecurrence.selectedTimeSlot.minutesSpaceAfter"
+                           name="minutesSpaceAfter"
+                           #minutesSpaceAfterRef="ngModel"
+                           min="0"
+                           max="60">
+                </ion-input>
+              </ion-item>
+            </div>
+          </ion-list>
+
+        </div>
+
+      </div>
+    </ion-list>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

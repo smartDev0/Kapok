@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Guest Information')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent" *ngIf="registration">
+    <form #formRef="ngForm" (ngSubmit)="addingStudent(formRef)">
+      <ion-item>
+        <ion-label position="stacked">
+          {{translateUtil.translateKey('Contact Name')}}<ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input id="contactName" type="text" [(ngModel)]="registration.contactName" #contactNameRef="ngModel" name="contactName" required
+                   minlength="2" maxlength="200"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="contactNameRef.errors?.required && submitted" lines="none">
+        <!--ng-trim="false" pattern="^[a-zA-Z0-9 ]*$" minlength="2" maxlength="20"></ion-input>-->
+        <ion-label color="danger" >{{translateUtil.translateKey('Contact Name required')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="contactNameRef.errors?.minlength && submitted" lines="none">
+        <!--<ion-label *ngIf="contactNameRef.errors?.pattern && submitted">{{translateUtil.translateKey('NO_SPECIAL_CHAR')}}</ion-label>-->
+        <ion-label color="danger" >{{translateUtil.translateKey('MIN_2')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="contactNameRef.errors?.maxlength && submitted" lines="none">
+        <ion-label color="danger" >{{translateUtil.translateKey('Maximum 200')}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('EMAIL')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="email" [(ngModel)]="registration.email" name="email" #emailRef="ngModel" required
+                   pattern="^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[A-Za-z0-9+_{|}-]+[.][A-Za-z0-9+_{|}-]+$"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="emailRef.errors?.required && submitted" lines="none">
+        <ion-label color="danger" >{{translateUtil.translateKey('EMAIL_REQUIRED')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="emailRef.errors?.pattern && submitted" lines="none">
+        <ion-label color="danger" >{{translateUtil.translateKey('WRONG_EMAIL')}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Confirm Email')}}<ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="email" [(ngModel)]="confirmEmail" name="confirmEmail" required #confirmEmailRef="ngModel" (ngModelChange)="checkConfirmEmail()"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="confirmEmailError && submitted" lines="none">
+        <ion-label color="danger">{{confirmEmailError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('Phone')}} (111-1111111) <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="text" [(ngModel)]="registration.phoneNumber"  name="phoneNumber" #phoneNumberRef="ngModel" placeholder="XXX-XXXXXXX"
+                   minlength="2" maxlength="20" (ngModelChange)="validatePhone(registration.phoneNumber)" required></ion-input>
+      </ion-item>
+      <ion-item *ngIf="phoneNumberRef.errors?.required && submitted" lines="none">
+        <ion-label color="danger">{{translateUtil.translateKey('Phone number required')}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="phoneError && submitted" lines="none">
+        <ion-label color="danger">{{phoneError}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{translateUtil.translateKey('WeChat ID')}}</ion-label>
+        <ion-input type="text" [(ngModel)]="registration.weChatNum"  name="weChatNum" #weChatNumRef="ngModel"
+                   minlength="2" maxlength="200"></ion-input>
+      </ion-item>
+    </form>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

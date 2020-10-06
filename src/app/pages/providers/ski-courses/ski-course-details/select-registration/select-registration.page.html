@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Add registration')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="listContent" radio-group [(ngModel)]="selectedRegistration">
+    <ion-item *ngFor="let registration of registrations; let i = index; ">
+      <ion-label>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              {{registration.title}}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              {{registration.providerCourseTypeId}}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-badge class="badgeColor1">{{utils.formatDate(registration.startTime)}}</ion-badge>
+              {{translateUtil.translateKey('to')}}
+              <ion-badge class="badgeColor1">{{utils.formatDate(registration.endTime)}}</ion-badge>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+      <ion-radio [value]="registration"></ion-radio>
+    </ion-item>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

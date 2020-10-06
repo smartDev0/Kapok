@@ -1,0 +1,295 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{provider?.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list class="listContent">
+    <ion-list-header color="secondary" class="listHeader">
+      {{(provider)?.name}}
+    </ion-list-header>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('ID')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <!--<ion-item *ngIf="canEdit()">-->
+      <!--<ion-label>-->
+        <!--<ion-text>-->
+          <!--<h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Provider Type')}}</h2>-->
+        <!--</ion-text>-->
+        <!--<ion-text>{{(provider)?.providerTypeName}}</ion-text>-->
+      <!--</ion-label>-->
+    <!--</ion-item>-->
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Address')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.addressStr}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Phone')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.phone}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Email')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.email}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Auditing')}} (all instructors' registration emails will be CC to audit email)</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.auditing)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="(provider)?.auditing">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Audit Email')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.auditEmail}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Online Membership')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.onlineMembership)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Tax Rate')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.taxRate}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Trip Events')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.enableTripEvent)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Programs')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.enablePrograms)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Instructors')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.enableInstructors)}}</ion-text>
+      </ion-label>
+    </ion-item>
+<!--    <ion-item *ngIf="canEdit()">-->
+<!--      <ion-label>-->
+<!--        <ion-text>-->
+<!--          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Calendar')}}</h2>-->
+<!--        </ion-text>-->
+<!--        <ion-text>{{utils.getYesNo((provider)?.enablePackages)}}</ion-text>-->
+<!--      </ion-label>-->
+<!--    </ion-item>-->
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show instructor photo')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showInstructorPhoto)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Review')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showReview)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Rating')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showRating)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Review Email Link')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showEmailReview)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Lift Ticket Option')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.enableLiftTicket)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show Rental Option')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.enableRental)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show CourseTime in lesson Details')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showCourseTime)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show lesson tags')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showCourseTag)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label text-wrap>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Show private programs on programs page')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.showPrivateCourses)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Pay Online')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.payOnline)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Pay Offline')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.payOffline)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Pay option')}}</h2>
+        </ion-text>
+        <ion-text>{{(provider)?.payOptionName}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="canEdit()">
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Activated')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.getYesNo((provider)?.activated)}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item-divider color="listHeader" *ngIf="(provider)?.description">{{translateUtil.translateKey('DESCRIPTION')}}</ion-item-divider>
+    <ion-item text-wrap *ngIf="provider?.description">
+      <ion-text>{{(provider)?.description}}</ion-text>
+    </ion-item>
+
+    <ion-item *ngIf="appSession.clientConfigure?.enableTag && provider?.tags">
+      <ion-label text-wrap>
+        <ion-chip *ngFor="let tag of utils.getTagListFromString(provider.tags)" color="primary" outline>
+          <ion-label color="orange">{{tag.trim()}}</ion-label>
+        </ion-chip>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list class="listContent">
+    <ion-list-header color="primary">
+      Organized Trip Destinations
+    </ion-list-header>
+    <ion-item *ngFor="let meetPlace of (provider)?.tripHills" detail>
+      <ion-label (click)="onEditTripHill(meetPlace.id)">
+        <h2>{{meetPlace.locationStr}}</h2>
+        <p>{{utils.getYesNo(meetPlace.activated)}}</p>
+      </ion-label>
+      <ion-button *ngIf="canEdit()" slot="start" (click)="onDeleteTripHill(meetPlace.id)"><ion-icon name="trash"></ion-icon></ion-button>
+    </ion-item>
+
+    <ion-button *ngIf="canEdit()" size="small" expand="block" (click)="onAddPlace()">+</ion-button>
+  </ion-list>
+
+  <!--Update icon-->
+  <ion-list *ngIf="canEdit()" class="listContent">
+    <ion-list-header color="secondary" class="listHeader">Update Icon</ion-list-header>
+    <ion-item *ngIf="isApp" lines="none">
+      {{translateUtil.translateKey("Choose a Icon")}}
+      <ion-button size="small" slot="end" (click)="onFromLibrary()">
+        <ion-icon name="folder-open"></ion-icon>
+      </ion-button>
+      <ion-button size="small" slot="end" (click)="onFromCamera()">
+        <ion-icon name="camera"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item *ngIf="!isApp" lines="none">
+      <ion-button size="small" slot="start" (click)="onClickIcon()">Choose</ion-button>
+      <ion-text ><p id="files_info">{{files_info}}</p></ion-text>
+      <ion-button size="small" slot="end" (click)="updateImageDisplay()">Upload</ion-button>
+    </ion-item>
+    <input id="image_uploads" type="file" name="pic" accept="image/*" hidden>
+  </ion-list>
+
+  <div class="scroll-content"></div>
+
+<!--  <ion-item *ngIf="(!isApp) && canEdit()">-->
+<!--    <image-upload-->
+<!--            [max]="1"-->
+<!--            [extensions]="['jpg','jpeg','png']"-->
+<!--            [maxFileSize]="5048576"-->
+<!--            [beforeUpload]="onBeforeUpload"-->
+<!--    ></image-upload>-->
+<!--  </ion-item>-->
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

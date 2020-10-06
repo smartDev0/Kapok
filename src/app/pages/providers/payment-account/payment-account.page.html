@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Payment Account')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form *ngIf="paymentAccount" class="listContent" class="listContent" #formRef="ngForm" (ngSubmit)="saveProvider(formRef)">
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('id')}}</h2>
+        </ion-text>
+        <ion-text>{{(paymentAccount)?.id}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('Provider Id')}}</h2>
+        </ion-text>
+        <ion-text>{{(paymentAccount)?.providerId}}</ion-text>
+      </ion-label>
+    </ion-item>
+    
+    <ion-item >
+      <ion-label position="stacked">{{translateUtil.translateKey('Environment')}}</ion-label>
+      <ion-select name="environment" #environmentRef="ngModel" [(ngModel)]="paymentAccount.environment" [disabled]="!inEdit">
+        <ion-select-option value="DEVELOPMENT">{{translateUtil.translateKey('DEVELOPMENT')}}</ion-select-option>
+        <ion-select-option value="QA">QA</ion-select-option>
+        <ion-select-option value="PRODUCTION">{{translateUtil.translateKey('PRODUCTION')}}</ion-select-option>
+        <ion-select-option value="SANDBOX">{{translateUtil.translateKey('SANDBOX')}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="environmentRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Environment required')}}</ion-label>
+    </ion-item>
+
+    <ion-item >
+      <ion-label position="stacked">{{translateUtil.translateKey('MerchantId')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="small" [(ngModel)]="paymentAccount.merchantId"  name="merchantId" type="text" [disabled]="!inEdit"
+                 #merchantIdRef="ngModel" maxlength="200" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="merchantIdRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('MerchantId required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="merchantIdRef.errors?.maxlength" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Public Key')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="small" [(ngModel)]="paymentAccount.publicKey"  name="publicKey" type="text" [disabled]="!inEdit"
+                 #publicKeyRef="ngModel" maxlength="200" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="publicKeyRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('Public Key required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="publicKeyRef.errors?.maxlength" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('MAX_200')}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{translateUtil.translateKey('Private Key')}}<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input class="medium" [(ngModel)]="paymentAccount.privateKey"  name="privateKey" type="text" [disabled]="!inEdit"
+                 #privateKeyRef="ngModel" maxlength="100" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="privateKeyRef.errors?.required && submitted" lines="none">
+      <ion-label color="danger">{{translateUtil.translateKey('Private Key required')}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="privateKeyRef.errors?.maxlength" lines="none">
+      <ion-label color="danger" >{{translateUtil.translateKey('MAX_1000')}}</ion-label>
+    </ion-item>
+
+    <ion-item >
+      <ion-label>{{translateUtil.translateKey('Enabled')}}</ion-label>
+      <ion-checkbox [(ngModel)]="paymentAccount.enabled" [disabled]="!inEdit" name="Enabled"></ion-checkbox>
+    </ion-item>
+
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('createdDate')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate((paymentAccount)?.createdDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item >
+      <ion-label>
+        <ion-text>
+          <h2 padding-bottom class="fieldLabel">{{translateUtil.translateKey('lastUpdatedDate')}}</h2>
+        </ion-text>
+        <ion-text>{{utils.formatDate((paymentAccount)?.lastUpdatedDate)}}</ion-text>
+      </ion-label>
+    </ion-item>
+  </form>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

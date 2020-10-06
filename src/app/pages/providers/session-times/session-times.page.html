@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="{{appConstants.ROOT_PAGE}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{showAllTitle()}}{{translateUtil.translateKey('Session Times')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button slot="start" (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar [hidden]="!showSearchBar">
+    <ion-searchbar #search class="searchBar" [(ngModel)]="searchKey" (ionChange)="getItems($event)" debounce="1000" showCancelButton="always"
+                   (ionCancel)="onClearSearch()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item-divider></ion-item-divider>
+
+  <div *ngIf="fromCommand===appConstants.PAGE_FOR_INSTRUCTOR || fromCommand===appConstants.PAGE_FOR_MEMBER || fromCommand===appConstants.PAGE_FOR_PROVIDER">
+    <ion-list  class="listContent">
+      <ion-item *ngFor="let sessionTime of sessionTimes" class="pointer" (click)="onViewDetails(sessionTime)" detail>
+        <ion-label text-wrap>
+          <h2 *ngIf="sessionTime?.name" class="titleLabel" [ngClass]="{'missingTime' : (!sessionTime.startTime||!sessionTime.endTime), 'missingRecurrence':(sessionTime.recurrenceExist===false) }"
+              [innerHtml]="utils.highlightSearch(sessionTime?.name, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.courseName" [innerHtml]="utils.highlightSearch(sessionTime?.courseName, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.tripHillName" [innerHtml]="utils.highlightSearch(sessionTime?.tripHillName, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.instructorName" [innerHtml]="utils.highlightSearch(sessionTime?.instructorName, searchKey)"></h2>
+
+          <h2 no-margin *ngIf="sessionTime?.studentName && false">User </h2><h2 no-margin *ngIf="sessionTime?.studentName" [innerHtml]="utils.highlightSearch(sessionTime?.studentName, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.studentEmail && false">User email </h2><h2 no-margin *ngIf="sessionTime?.studentEmail" [innerHtml]="utils.highlightSearch(sessionTime?.studentEmail, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.guestName && false">Guest </h2><h2 no-margin *ngIf="sessionTime?.guestName" [innerHtml]="utils.highlightSearch(sessionTime?.guestName, searchKey)"></h2>
+          <h2 no-margin *ngIf="sessionTime?.guestEmail && false">Guest email </h2><h2 no-margin *ngIf="sessionTime?.guestEmail" [innerHtml]="utils.highlightSearch(sessionTime?.guestEmail, searchKey)"></h2>
+
+          <h2 no-margin *ngIf="sessionTime?.startTime || sessionTime?.endTime">
+            Time: <div *ngIf="sessionTime?.startTime">{{utils.formatDate(sessionTime?.startTime)}} </div>
+            <div *ngIf="sessionTime?.endTime">To {{utils.formatDate(sessionTime?.endTime)}}</div>
+          </h2>
+          <ion-text *ngIf="sessionTime.recurrenceExist===false" class="missingRecurrence">Missing InstructorTime recurrence</ion-text>
+          <ion-text *ngIf="!sessionTime.startTime||!sessionTime.endTime" class="missingTime">Missing start or end time</ion-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

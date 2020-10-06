@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClose()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{(appConstants.beta?"BETA ":"")}}{{translateUtil.translateKey('Search User')}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-radio-group class="listContent" [(ngModel)]="selectedUser" name="selectedUserValue" #selectedUserRef="ngModel">
+      <ion-list-header color="secondary" text-capitalize="false" class="listHeader">{{translateUtil.translateKey('SEARCH_USER')}}</ion-list-header>
+      <ion-item *ngFor="let item of searchedUserList; let i = index; ">
+        <ion-label>{{item.userName}}</ion-label>
+        <ion-radio [value]="item"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <div class="scroll-content"></div>
+
+  <!--Fav buttons -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="orange" (click)="openMenu()">
+      {{translateUtil.translateKey("Menu")}}
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
